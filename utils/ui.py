@@ -27,3 +27,11 @@ def wait_for_choice():
         and records keypress. 
     '''
 	return event.waitKeys(['left', 'right'])
+
+def wait_for_keypress(win, message = ''):
+	'''
+	Wait until subject presses spacebar.
+	'''
+	if message:
+		present_text(win, message)
+	event.waitKeys(keyList = ["space"]) # wait until subject responds

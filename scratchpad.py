@@ -1,6 +1,6 @@
 import numpy as np
 
-from util.ui import (
+from utils.ui import (
     fixation_cross
 )
 
