@@ -88,14 +88,24 @@ def work_rest_segment(win, choice):
 		win.flip()
 		core.wait(1)
 
-def present_feedback(win, offer, choice, success):
+def present_feedback(win, trial, choice, success):
 	# if chose rest
 	if 'right' in choice:
 		present_text(win, "No points earned or lost.")
 	
 	# if worked and succeeded
 	elif 'left' in choice & success:
-		if 
+		if trial == 'self_reward':
+			outcome = offer_reward + target_self
+		elif trial == 'self_punishment':
+			offer = offer_punishment + target_self
+		elif trial == 'other_reward':
+			offer = offer_reward + target_other
+		elif trial == 'other_punishment':
+			offer = offer_punishment + target_other
+		else:
+			offer = "Warning, wrong input"
+
 		present_text(win, outcome)
 	
 	# if wo

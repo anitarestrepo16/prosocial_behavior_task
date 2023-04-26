@@ -2,6 +2,7 @@ import numpy as np
 from collections import OrderedDict
 from psychopy import visual, event
 from time import time
+import random
 
 from utils.ui import (
     fixation_cross,
@@ -19,8 +20,8 @@ subj_num = int(subj_num)
 #log = TSVWriter(subj_num)
 np.random.seed(subj_num)
 # targets
-target_self = "You"
-target_other = "Next Participant"
+target_self = "you"
+target_other = "the next participant"
 targets = [target_self, target_other]
 # trial types
 offer_reward = "Exert Effort to Win 10 Points for "
@@ -35,12 +36,24 @@ lose_punishment = "-10 Points for "
 outcomes = [win_reward, win_punishment, lose_reward, lose_punishment]
 
 # specify block design -- n_trials, [target, trial_type]
-BLOCKS = OrderedDict()
-BLOCKS['self_reward'] = (25, ['self', 'reward']) 
-BLOCKS['self_punishment'] = (25, ['self', 'punishment']) 
-BLOCKS['other_reward'] = (25, ['other', 'reward'])
-BLOCKS['random2'] = (25, ['other', 'punishment'])
-########## still need to figure out how to randomize trial order
+
+self_reward = ('self', 'reward') 
+self_punishment = ('self', 'punishment') 
+other_reward = ('other', 'reward')
+other_punishment = ('other', 'punishment')
+
+trials_per_block = 25
+trials = [
+	# self reward
+    trials_per_block*(["self_reward"]) +
+    # self punishment
+	trials_per_block*['self_punishment'] +
+	# other reward
+	trials_per_block*['other_reward'] +
+	# other punishment
+	trials_per_block*['other_punishment']][0]
+random.shuffle(trials)
+
 
 win = visual.Window(
 	size = (800, 600),
@@ -67,71 +80,41 @@ wait_for_keypress(win, txt)
 ########################
 # experiment
 ########################
-for block_code in BLOCKS:
+for trial in trials:
 
-	t2 = time()
-	print("\nBeginning %s block\n"%block_code)
-	print("It's been %d minutes since the experiment started."%((t2 - t1)/60))
-	trial_info = BLOCKS[block_code]
-	n_trials = trial_info[0]
+	# decide what to offer this trial
+	if trial == 'self_reward':
+		offer = offer_reward + target_self
+	elif trial == 'self_punishment':
+		offer = offer_punishment + target_self
+	elif trial == 'other_reward':
+		offer = offer_reward + target_other
+	elif trial == 'other_punishment':
+		offer = offer_punishment + target_other
+	else:
+		offer = "Warning, wrong input"
 
-	for trial in range(n_trials):
+	## now actually run the trial
+	# offer
+	present_text(win, offer)
+	# fixation
+	fixation_cross(win)
+	# choice
+	choice = present_choice(win)
+	# fixation
+	fixation_cross(win)
+	# work/rest
+	work_rest_segment(win, choice)
+	#### need to figure out how will determine whether work trial succeeded
+	success = True
+	# fixation
+	fixation_cross(win)
+	# feeback
 
-		# decide what to do this trial
-		### need to figure out how to randomize what shows up in this part and save data
-		
-		offer = offers[0] + targets[0] 
-
-
-		# keep experimenter in the loop via console
-		stdout.write("\rTrial {0:03d}".format(trial) + "/%d"%n_trials)
-		stdout.flush()
-
-		## now actually run the trial
-		# offer
-		present_text(win, offer)
-		# fixation
-		fixation_cross(win)
-		# choice
-		choice = present_choice(win)
-		# fixation
-		fixation_cross(win)
-		# work/rest
-		work_rest_segment(win, choice)
-		#### need to figure out how will determine whether work trial succeeded
-		success = True
-		# fixation
-		fixation_cross(win)
-		# feeback
-
-		# fixation (ITI)
-		fixation_cross(win)
+	# fixation (ITI)
+	fixation_cross(win)
 
 
-		wait_for_keypress(win, message = 'Press spacebar to continue.')
-		
-		
-		start_t = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-		display(win, sentence) # flips screen
-		marker.send(trial + 1) # mark with trial number, 1-indexed
-		wait_for_keypress(win)
-		end_t = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-		marker.send(127) # end trial
-		detected_delay = ask_whether_delay(win)
-		resp_tag = 125 if detected_delay else 126
-		marker.send(resp_tag)
-		log.write(
-			block_code,
-			trial + 1,
-			delay,
-			sentence,
-			detected_delay,
-			start_t,
-			end_t
-		)
-
-marker.close()
-audio.stop()
 t2 = time()
 print('Experiment Complete.')
 print('The experiment took %d minutes.'%((t2 - t1)/60))
