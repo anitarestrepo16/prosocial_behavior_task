@@ -9,14 +9,16 @@ from utils.ui import (
     wait_for_keypress,
     decide_offer,
     present_choice,
+    translate_choice,
     work_rest_segment,
     present_feedback
 )
+from utils.write import TSVWriter
 
 # initialize some things
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
-#log = TSVWriter(subj_num)
+log = TSVWriter(subj_num)
 np.random.seed(subj_num)
 
 # make trials list
@@ -34,6 +36,7 @@ random.shuffle(trials)
 
 points_self = 0
 points_other = 0
+trial_num = 1
 
 
 win = visual.Window(
@@ -88,6 +91,17 @@ for trial in trials:
 	points_other += points[1]
 	# fixation (ITI)
 	fixation_cross(win)
+	choice = translate_choice(choice)
+	log.write(
+		trial_num,
+		trial,
+		offer,
+		choice,
+		success,
+		points[0],
+		points[1]
+	)
+	trial_num += 1
 
 
 t2 = time()

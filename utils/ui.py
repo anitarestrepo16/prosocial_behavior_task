@@ -71,6 +71,18 @@ def present_choice(win):
 	win.flip()
 	return event.waitKeys(keyList = ['left', 'right'])
 
+def translate_choice(choice):
+	'''
+	Translates choice variable to string 
+		('work' or 'rest').
+	'''
+	if ('left' in choice):
+		return 'work'
+	elif ('right' in choice):
+		return 'rest'
+	else:
+		return ''
+
 def work_rest_segment(win, choice):
 	'''
 	If chose to work, presents grip strength segment,
