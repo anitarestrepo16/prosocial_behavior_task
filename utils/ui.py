@@ -67,7 +67,8 @@ def work_rest_segment(win, choice):
 		core.wait(0.5)
 
 		# Grip
-		grip_message = visual.TextStim(win, pos = [0, +3], text = "SQUEEZE")
+		grip_message = visual.TextStim(win, pos = [0, +3],
+				  text = "SQUEEZE")
 		grip_message.draw()
 		win.flip()
 		core.wait(1)
@@ -75,7 +76,8 @@ def work_rest_segment(win, choice):
 	# if choose to rest
 	elif 'right' in choice:
 		# rest segment
-		rest_message = visual.TextStim(win, pos = [0, +3], text = 'You may rest.')
+		rest_message = visual.TextStim(win, pos = [0, +3],
+				  text = 'You may rest.')
 		rest_message.draw()
 		win.flip()
 		core.wait(1)
@@ -83,29 +85,66 @@ def work_rest_segment(win, choice):
 	# Anything else
 	else:
 		# catch all
-		error_message = visual.TextStim(win, pos = [0, +3], text = 'Please make a choice')
+		error_message = visual.TextStim(win, pos = [0, +3],
+				   text = 'Please make a choice')
 		error_message.draw()
 		win.flip()
 		core.wait(1)
 
 def present_feedback(win, trial, choice, success):
+	'''
+	Present text with points lost or gained and return
+		number of points.
+	'''
 	# if chose rest
 	if 'right' in choice:
 		present_text(win, "No points earned or lost.")
+		points_self = 0
+		points_other = 0
 	
 	# if worked and succeeded
-	elif 'left' in choice & success:
+	elif ('left' in choice) & (success):
 		if trial == 'self_reward':
-			outcome = offer_reward + target_self
+			outcome = "+10 points for you"
+			points_self = 10
+			points_other = 0
 		elif trial == 'self_punishment':
-			offer = offer_punishment + target_self
+			outcome = "-0 points for you"
+			points_self = 0
+			points_other = 0
 		elif trial == 'other_reward':
-			offer = offer_reward + target_other
+			outcome = '+10 points for the next participant'
+			points_self = 0
+			points_other = 10
 		elif trial == 'other_punishment':
-			offer = offer_punishment + target_other
+			outcome = '-0 points for the next participant'
+			points_self = 0
+			points_other = 0
 		else:
-			offer = "Warning, wrong input"
+			outcome = "Warning, wrong input"
 
-		present_text(win, outcome)
+	# if worked and failed
+	elif ('left' in choice) & (not success):
+		if trial == 'self_reward':
+			outcome = "+0 points for you"
+			points_self = 0
+			points_other = 0
+		elif trial == 'self_punishment':
+			outcome = "-10 points for you"
+			points_self = -10
+			points_other = 0
+		elif trial == 'other_reward':
+			outcome = '+0 points for the next participant'
+			points_self = 0
+			points_other = 0
+		elif trial == 'other_punishment':
+			outcome = '-10 points for the next participant'
+			points_self = 0
+			points_other = -10
+		else:
+			outcome = "Warning, wrong input"
+
+	present_text(win, outcome)
+	return (points_self, points_other)
 	
-	# if wo
+	

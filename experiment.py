@@ -9,7 +9,8 @@ from utils.ui import (
     present_text,
     wait_for_keypress,
     present_choice,
-    work_rest_segment
+    work_rest_segment,
+    present_feedback
 )
 
 
@@ -35,7 +36,7 @@ lose_reward = "-0 Points for "
 lose_punishment = "-10 Points for "
 outcomes = [win_reward, win_punishment, lose_reward, lose_punishment]
 
-# specify block design -- n_trials, [target, trial_type]
+# make trials list
 
 self_reward = ('self', 'reward') 
 self_punishment = ('self', 'punishment') 
@@ -53,6 +54,9 @@ trials = [
 	# other punishment
 	trials_per_block*['other_punishment']][0]
 random.shuffle(trials)
+
+points_self = 0
+points_other = 0
 
 
 win = visual.Window(
@@ -110,7 +114,10 @@ for trial in trials:
 	# fixation
 	fixation_cross(win)
 	# feeback
-
+	points = present_feedback(win, trial, choice, success)
+	# keep track of point changes
+	points_self += points[0]
+	points_other += points[1]
 	# fixation (ITI)
 	fixation_cross(win)
 
