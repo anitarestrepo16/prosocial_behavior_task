@@ -13,12 +13,12 @@ from utils.ui import (
     work_rest_segment,
     present_feedback
 )
-from utils.write import TSVWriter
+from utils.write import CSVWriter
 
 # initialize some things
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
-log = TSVWriter(subj_num)
+log = CSVWriter(subj_num)
 np.random.seed(subj_num)
 
 # make trials list
