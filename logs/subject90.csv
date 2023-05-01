@@ -1,0 +1,5 @@
+trial_num,trial_type,offer,choice,success,outcome_self,outcome_other
+1,self_punishment,Exert Effort to Avoid Losing 10 Points for you,work,1,0,0
+2,self_reward,Exert Effort to Win 10 Points for you,rest,1,0,0
+3,other_reward,Exert Effort to Win 10 Points for the next participant,rest,1,0,0
+4,other_punishment,Exert Effort to Avoid Losing 10 Points for the next participant,rest,1,0,0

@@ -14,8 +14,11 @@ from utils.ui import (
     present_feedback
 )
 from utils.write import CSVWriter
+from utils.triggerer import Triggerer
 
 # initialize some things
+parport = Triggerer(0)
+parport.set_trigger_labels(['show_offer', 'make_choice', 'work_rest', 'feedback'])
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 log = CSVWriter(subj_num)
@@ -25,7 +28,7 @@ np.random.seed(subj_num)
 trials_per_block = 1
 trials = [
 	# self reward
-    trials_per_block*(['self_reward']) +
+    trials_per_block*['self_reward'] +
     # self punishment
 	trials_per_block*['self_punishment'] +
 	# other reward
@@ -71,20 +74,24 @@ for trial in trials:
 
 	## now actually run the trial
 	# offer
+	parport.send_trigger('show_offer')
 	present_text(win, offer)
 	# fixation
 	fixation_cross(win)
 	# choice
 	choice = present_choice(win)
+	parport.send_trigger('make_choice')
 	# fixation
 	fixation_cross(win)
 	# work/rest
+	parport.send_trigger('work_rest')
 	work_rest_segment(win, choice)
 	#### need to figure out how will determine whether work trial succeeded
 	success = True
 	# fixation
 	fixation_cross(win)
 	# feeback
+	parport.send_trigger('feedback')
 	points = present_feedback(win, trial, choice, success)
 	# keep track of point changes
 	points_self += points[0]
