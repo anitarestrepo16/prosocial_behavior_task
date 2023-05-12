@@ -110,9 +110,11 @@ for trial in trials:
 		trial,
 		offer,
 		choice,
+		avg_grip, 
 		success,
 		points[0],
-		points[1]
+		points[1],
+		max_grip
 	)
 	trial_num += 1
 

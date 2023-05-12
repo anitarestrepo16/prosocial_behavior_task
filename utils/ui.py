@@ -179,6 +179,7 @@ def work_rest_segment(win, choice, gdx_obj, MVC):
 	elif ('right' in choice):
 		# rest segment
 		present_text(win, 'You may rest.')
+		return (-99, False)
 
 	# Anything else
 	else:
