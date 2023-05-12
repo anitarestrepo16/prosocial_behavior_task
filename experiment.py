@@ -15,7 +15,7 @@ from utils.ui import (
 )
 from utils.write import CSVWriter
 from utils.triggerer import Triggerer
-from utils.gdx import gdx
+from gdx import gdx
 
 # initialize some things
 parport = Triggerer(0)
@@ -92,9 +92,8 @@ for trial in trials:
 	fixation_cross(win)
 	# work/rest
 	parport.send_trigger('work_rest')
-	work_rest_segment(win, choice)
-	#### need to figure out how will determine whether work trial succeeded
-	success = True
+	avg_grip, success = work_rest_segment(win, choice, grip, max_grip)
+	print(success)
 	# fixation
 	fixation_cross(win)
 	# feeback

@@ -1,8 +1,6 @@
 from psychopy import visual, core, event
 from psychopy.tools.filetools import fromFile, toFile
 import numpy as np
-import random
-import gdx
 from time import time
 
 def fixation_cross(win):
@@ -156,10 +154,14 @@ def get_squeeze(gdx_obj, sample_time, MVC):
 	success = determine_success(measurements, MVC)
 	return (avg_grip, success)
 
-def work_rest_segment(win, choice):
+def work_rest_segment(win, choice, gdx_obj, MVC):
 	'''
 	If chose to work, presents grip strength segment,
 	otherwise presents "Rest".
+
+	Returns tuple:
+		avg_grip (float): mean grip strength for that trial
+		success (Boolean): whether work trial succeeded
 	'''
 	# if choose to work
 	if ('left' in choice):
@@ -169,7 +171,9 @@ def work_rest_segment(win, choice):
 		present_text(win, '3, 2, 1')
 
 		# Grip
-		present_text(win, 'SQUEEZE')
+		present_text(win, 'SQUEEZE', 0.1)
+		avg_grip, success = get_squeeze(gdx_obj, 3, MVC)
+		return (avg_grip, success)
 
 	# if choose to rest
 	elif ('right' in choice):
