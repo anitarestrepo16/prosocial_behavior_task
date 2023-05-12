@@ -15,14 +15,21 @@ from utils.ui import (
 )
 from utils.write import CSVWriter
 from utils.triggerer import Triggerer
+from utils.gdx import gdx
 
 # initialize some things
 parport = Triggerer(0)
+grip = gdx.gdx()
+grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221')
+grip.select_sensors([1])
 parport.set_trigger_labels(['show_offer', 'make_choice', 'work_rest', 'feedback'])
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 log = CSVWriter(subj_num)
 np.random.seed(subj_num)
+max_grip = input("Enter max voluntary contraction: ")
+max_grip = float(max_grip)
+
 
 # make trials list
 trials_per_block = 1
@@ -110,7 +117,7 @@ for trial in trials:
 	)
 	trial_num += 1
 
-
+grip.close()
 t2 = time()
 print('Experiment Complete.')
 print('The experiment took %d minutes.'%((t2 - t1)/60))

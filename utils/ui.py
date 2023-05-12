@@ -2,6 +2,8 @@ from psychopy import visual, core, event
 from psychopy.tools.filetools import fromFile, toFile
 import numpy as np
 import random
+import gdx
+from time import time
 
 def fixation_cross(win):
 	'''
@@ -82,6 +84,77 @@ def translate_choice(choice):
 		return 'rest'
 	else:
 		return ''
+
+def determine_success(grip_list, MVC):
+	'''
+	Determine whether work trial succeeded. Success if 
+	measurements remain above 70% of maximum voluntary
+	contraction (MVC) for 1 second of the total time.
+
+	Arguments:
+		grip_list (lst): list of grip measurements
+		MVC (float): maximum voluntary contraction
+
+	Returns boolean: True if success, False if failure.
+	'''
+
+	n_samples = len(grip_list)
+
+	# check to make sure have at least 1 second of data
+	if n_samples < 10:
+		return False
+	# if have at least one second of data
+	else:
+		# iterate across measurements
+		n_success = 0
+		print('starting: ', n_success)
+		for val in grip_list:
+			# check the value
+			if val > 0.7*MVC:
+				n_success += 1
+				print(n_success)
+			else:
+				n_success = 0
+				print(n_success)
+			# check number of successes
+			if n_success >= 10:
+				return True
+			else:
+				continue
+		# if checked all values and did not return True
+		return False
+
+
+def get_squeeze(gdx_obj, sample_time, MVC):
+	'''
+	Samples grip strength measurements every 100ms for
+	a given amount of time. If measurements remain above
+	70% of maximum voluntary contraction (MVC) for 1 second, trial
+	is considered successful.
+
+	Arguments:
+		gdx_obj: A Vernier dynamometer class object.
+		sample_time (int): amount of time to sample
+		MVC (float): participant's max grip strength
+	
+	Returns: tuple
+		avg_grip (float): average of all sampled values for sample_time
+		trial_outcome (Boolean): True if successful, False if failed.
+	'''
+	gdx_obj.start(100)
+	measurements = []
+	t0 = time()
+	print('t0: ',t0)
+	t = time()
+	while t <= t0 + sample_time:
+		measurement = gdx_obj.read()
+		print(t, ': ', measurement)
+		measurements.append(measurement[0])
+		t = time()
+	gdx_obj.stop()
+	avg_grip = np.mean(measurements)
+	success = determine_success(measurements, MVC)
+	return (avg_grip, success)
 
 def work_rest_segment(win, choice):
 	'''
