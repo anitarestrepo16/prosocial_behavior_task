@@ -15,20 +15,23 @@ from utils.ui import (
 )
 from utils.write import CSVWriter
 from utils.triggerer import Triggerer
-from gdx import gdx
+from utils.gdx import gdx
 
 # initialize some things
 parport = Triggerer(0)
 grip = gdx.gdx()
 grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221')
 grip.select_sensors([1])
-parport.set_trigger_labels(['show_offer', 'make_choice', 'work_rest', 'feedback'])
+parport.set_trigger_labels(['baseline_start', 'baseline_end', 'show_offer', 'make_choice', 'work_rest', 'feedback'])
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 log = CSVWriter(subj_num)
 np.random.seed(subj_num)
 max_grip = input("Enter max voluntary contraction: ")
 max_grip = float(max_grip)
+points_self = 0
+points_other = 0
+trial_num = 1
 
 
 # make trials list
@@ -43,10 +46,6 @@ trials = [
 	# other punishment
 	trials_per_block*['other_punishment']][0]
 random.shuffle(trials)
-
-points_self = 0
-points_other = 0
-trial_num = 1
 
 
 win = visual.Window(
@@ -74,6 +73,13 @@ wait_for_keypress(win, txt)
 ########################
 # experiment
 ########################
+
+# Baseline Physio
+parport.send_trigger('start_baseline')
+present_text(win, 'Relax', 30)
+parport.send_trigger('end_baseline')
+
+
 for trial in trials:
 
 	## decide what to offer this trial

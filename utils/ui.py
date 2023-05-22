@@ -123,7 +123,31 @@ def determine_success(grip_list, MVC):
 		return False
 
 
-def get_squeeze(gdx_obj, sample_time, MVC):
+def get_squeeze(gdx_obj, sample_time):
+	'''
+	Samples grip strength measurements every 100ms for
+	a given amount of time. 
+
+	Arguments:
+		gdx_obj: A Vernier dynamometer class object.
+		sample_time (int): amount of time to sample
+	
+	Returns: list of all sampled measurements (in Newtons). 
+	'''
+	gdx_obj.start(100)
+	measurements = []
+	t0 = time()
+	print('t0: ',t0)
+	t = time()
+	while t <= t0 + sample_time:
+		measurement = gdx_obj.read()
+		print(t, ': ', measurement)
+		measurements.append(measurement[0])
+		t = time()
+	gdx_obj.stop()
+	return measurements
+
+def grip_segment(gdx_obj, sample_time, MVC):
 	'''
 	Samples grip strength measurements every 100ms for
 	a given amount of time. If measurements remain above
@@ -139,17 +163,7 @@ def get_squeeze(gdx_obj, sample_time, MVC):
 		avg_grip (float): average of all sampled values for sample_time
 		trial_outcome (Boolean): True if successful, False if failed.
 	'''
-	gdx_obj.start(100)
-	measurements = []
-	t0 = time()
-	print('t0: ',t0)
-	t = time()
-	while t <= t0 + sample_time:
-		measurement = gdx_obj.read()
-		print(t, ': ', measurement)
-		measurements.append(measurement[0])
-		t = time()
-	gdx_obj.stop()
+	measurements = get_squeeze(gdx_obj, sample_time)
 	avg_grip = np.mean(measurements)
 	success = determine_success(measurements, MVC)
 	return (avg_grip, success)
@@ -172,7 +186,7 @@ def work_rest_segment(win, choice, gdx_obj, MVC):
 
 		# Grip
 		present_text(win, 'SQUEEZE', 0.1)
-		avg_grip, success = get_squeeze(gdx_obj, 3, MVC)
+		avg_grip, success = grip_segment(gdx_obj, 3, MVC)
 		return (avg_grip, success)
 
 	# if choose to rest
