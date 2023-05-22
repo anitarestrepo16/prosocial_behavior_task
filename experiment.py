@@ -31,7 +31,8 @@ np.random.seed(subj_num)
 points_self = 0
 points_other = 0
 trial_num = 1
-MVC_time = 30
+MVC_time = 3
+baseline_time = 3
 
 # make trials list
 trials_per_block = 1
@@ -80,7 +81,7 @@ parport.send_trigger('MVC_end')
 
 # Baseline Physio
 parport.send_trigger('start_baseline')
-present_text(win, 'Relax', 30)
+present_text(win, 'Relax', baseline_time)
 parport.send_trigger('end_baseline')
 
 # Prosocial Behavior Task
