@@ -18,12 +18,18 @@ from utils.write import CSVWriter
 from utils.triggerer import Triggerer
 from utils.gdx import gdx
 
-# initialize some things
+#### initialize some things
+
+# parport triggers
 parport = Triggerer(0)
+parport.set_trigger_labels(['MVC_start', 'MVC_end', 'baseline_start', 'baseline_end', 'show_offer', 'make_choice', 'work_rest', 'feedback'])
+
+# hand dynamometer
 grip = gdx.gdx()
 grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221')
 grip.select_sensors([1])
-parport.set_trigger_labels(['MVC_start', 'MVC_end', 'baseline_start', 'baseline_end', 'show_offer', 'make_choice', 'work_rest', 'feedback'])
+
+# data handling
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 log = CSVWriter(subj_num)
@@ -58,34 +64,52 @@ win = visual.Window(
 	allowGUI = False
 	)
 
-t1 = time()
+########################
+# Maximum Voluntary Contraction (MVC)
+########################
 
-########################
-# instructions
-########################
+# Instructions  
 txt = '''
-Instructions go here.
+Instructions for getting MVC.
 (press spacebar to continue through instructions)
 '''
 wait_for_keypress(win, txt)
-
-
-
-########################
-# experiment
-########################
 
 # Get MVC
 parport.send_trigger('MVC_start')
 max_grip = get_MVC(win, grip, MVC_time)
 parport.send_trigger('MVC_end')
 
+########################
 # Baseline Physio
-parport.send_trigger('start_baseline')
-present_text(win, 'Relax', baseline_time)
-parport.send_trigger('end_baseline')
+########################
 
+# Instructions
+txt = '''
+Instructions for Baseline Physio.
+(press spacebar to continue through instructions)
+'''
+wait_for_keypress(win, txt)
+
+# Get Baseline Physio
+parport.send_trigger('baseline_start')
+present_text(win, 'Relax', baseline_time)
+parport.send_trigger('baseline_end')
+
+########################
 # Prosocial Behavior Task
+########################
+
+t1 = time()
+
+# Instructions
+txt = '''
+Instructions for task.
+(press spacebar to continue through instructions)
+'''
+wait_for_keypress(win, txt)
+
+# Run Prosocial Behavior Task
 for trial in trials:
 
 	## decide what to offer this trial
@@ -132,8 +156,8 @@ for trial in trials:
 
 grip.close()
 t2 = time()
-print('Experiment Complete.')
-print('The experiment took %d minutes.'%((t2 - t1)/60))
+print('Task Complete.')
+print('The task took %d minutes.'%((t2 - t1)/60))
 print('Participant earned %d points for themselves.'%(points_self))
 print('Participant earned %d points for the next participant.'%(points_other))
 
