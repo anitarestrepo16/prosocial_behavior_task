@@ -33,6 +33,7 @@ points_other = 0
 trial_num = 1
 MVC_time = 3
 baseline_time = 3
+ANCHOR_Y = -0.5
 
 # make trials list
 trials_per_block = 1
@@ -103,7 +104,7 @@ for trial in trials:
 	fixation_cross(win)
 	# work/rest
 	parport.send_trigger('work_rest')
-	avg_grip, success = work_rest_segment(win, choice, grip, max_grip)
+	avg_grip, success = work_rest_segment(win, choice, grip, max_grip, ANCHOR_Y)
 	print(success)
 	# fixation
 	fixation_cross(win)

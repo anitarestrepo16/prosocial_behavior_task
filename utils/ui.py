@@ -122,7 +122,33 @@ def determine_success(grip_list, MVC):
 		# if checked all values and did not return True
 		return False
 
+def draw_grip(win, y_anchor, force, MVC):
+	'''
+	Draw a target force line and a rectangle where the
+	  height is the force exerted.
 
+	Arguments:
+		win: the psychopy window to draw to
+		y_anchor (float): the vertical height to anchor the bottom of the rect
+		force (float): the grip strength force exerted
+		MVC (float): max voluntary contraction
+	'''
+	# set target bar
+	target = y_anchor + MVC*0.7 # anchor plus 70% of MVC
+	target_bar = visual.Line(win)
+	target_bar.start = (-0.3, target)
+	target_bar.end = (0.3, target)
+	target_bar.color = 'red'
+	# set force bar
+	force_bar = visual.rect.Rect(win, pos = (0, y_anchor), anchor = 'bottom')
+	force_bar.color = 'white'
+	force_bar.height = force
+
+	# draw
+	target_bar.draw()
+	force_bar.draw()
+	win.flip()
+	
 def get_squeeze(gdx_obj, sample_time):
 	'''
 	Samples grip strength measurements every 100ms for
@@ -142,6 +168,34 @@ def get_squeeze(gdx_obj, sample_time):
 	while t <= t0 + sample_time:
 		measurement = gdx_obj.read()
 		print(t, ': ', measurement)
+		measurements.append(measurement[0])
+		t = time()
+	gdx_obj.stop()
+	return measurements
+
+def get_squeeze_and_viz(gdx_obj, sample_time, win, y_anchor, MVC):
+	'''
+	Samples grip strength measurements every 100ms for
+	a given amount of time and visualizes strength at each sample.
+
+	Arguments:
+		gdx_obj: A Vernier dynamometer class object.
+		sample_time (int): amount of time to sample
+		win: the psychopy window to draw to
+		y_anchor (float): the vertical height to anchor the bottom of the rect
+		MVC (float): max voluntary contraction
+	
+	Returns: list of all sampled measurements (in Newtons). 
+	'''
+	gdx_obj.start(100)
+	measurements = []
+	t0 = time()
+	print('t0: ',t0)
+	t = time()
+	while t <= t0 + sample_time:
+		measurement = gdx_obj.read()
+		print(t, ': ', measurement)
+		draw_grip(win, y_anchor, measurement[0], MVC)
 		measurements.append(measurement[0])
 		t = time()
 	gdx_obj.stop()
@@ -168,7 +222,7 @@ def get_MVC(win, gdx_obj, sample_time):
 	return np.max(measurements)
 
 
-def grip_segment(gdx_obj, sample_time, MVC):
+def grip_segment(gdx_obj, sample_time, MVC, win, y_anchor):
 	'''
 	Samples grip strength measurements every 100ms for
 	a given amount of time. If measurements remain above
@@ -179,17 +233,19 @@ def grip_segment(gdx_obj, sample_time, MVC):
 		gdx_obj: A Vernier dynamometer class object.
 		sample_time (int): amount of time to sample
 		MVC (float): participant's max grip strength
+		win: the psychopy window to draw to
+		y_anchor (float): the vertical height to anchor the bottom of the rect
 	
 	Returns: tuple
 		avg_grip (float): average of all sampled values for sample_time
 		trial_outcome (Boolean): True if successful, False if failed.
 	'''
-	measurements = get_squeeze(gdx_obj, sample_time)
+	measurements = get_squeeze_and_viz(gdx_obj, sample_time, win, y_anchor, MVC)
 	avg_grip = np.mean(measurements)
 	success = determine_success(measurements, MVC)
 	return (avg_grip, success)
 
-def work_rest_segment(win, choice, gdx_obj, MVC):
+def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	'''
 	If chose to work, presents grip strength segment,
 	otherwise presents "Rest".
@@ -207,7 +263,7 @@ def work_rest_segment(win, choice, gdx_obj, MVC):
 
 		# Grip
 		present_text(win, 'SQUEEZE', 0.1)
-		avg_grip, success = grip_segment(gdx_obj, 3, MVC)
+		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
 		return (avg_grip, success)
 
 	# if choose to rest
