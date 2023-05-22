@@ -147,6 +147,27 @@ def get_squeeze(gdx_obj, sample_time):
 	gdx_obj.stop()
 	return measurements
 
+def get_MVC(win, gdx_obj, sample_time):
+	'''
+	Obtain participant's maximum vountary contraction (MVC).
+
+	Arguments:
+		gdx_obj: A Vernier dynamometer class object.
+		sample_time (int): amount of time to sample
+
+	Returns: MVC (float)
+	'''
+	# Countdown to Grip
+	present_text(win, '3')
+	present_text(win, '3, 2')
+	present_text(win, '3, 2, 1')
+
+	# Grip
+	present_text(win, 'SQUEEZE', 0.1)
+	measurements = get_squeeze(gdx_obj, sample_time)
+	return np.max(measurements)
+
+
 def grip_segment(gdx_obj, sample_time, MVC):
 	'''
 	Samples grip strength measurements every 100ms for

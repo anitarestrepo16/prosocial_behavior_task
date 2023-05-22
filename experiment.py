@@ -11,7 +11,8 @@ from utils.ui import (
     present_choice,
     translate_choice,
     work_rest_segment,
-    present_feedback
+    present_feedback,
+    get_MVC
 )
 from utils.write import CSVWriter
 from utils.triggerer import Triggerer
@@ -22,17 +23,15 @@ parport = Triggerer(0)
 grip = gdx.gdx()
 grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221')
 grip.select_sensors([1])
-parport.set_trigger_labels(['baseline_start', 'baseline_end', 'show_offer', 'make_choice', 'work_rest', 'feedback'])
+parport.set_trigger_labels(['MVC_start', 'MVC_end', 'baseline_start', 'baseline_end', 'show_offer', 'make_choice', 'work_rest', 'feedback'])
 subj_num = input("Enter subject number: ")
 subj_num = int(subj_num)
 log = CSVWriter(subj_num)
 np.random.seed(subj_num)
-max_grip = input("Enter max voluntary contraction: ")
-max_grip = float(max_grip)
 points_self = 0
 points_other = 0
 trial_num = 1
-
+MVC_time = 30
 
 # make trials list
 trials_per_block = 1
@@ -74,12 +73,17 @@ wait_for_keypress(win, txt)
 # experiment
 ########################
 
+# Get MVC
+parport.send_trigger('MVC_start')
+max_grip = get_MVC(win, grip, MVC_time)
+parport.send_trigger('MVC_end')
+
 # Baseline Physio
 parport.send_trigger('start_baseline')
 present_text(win, 'Relax', 30)
 parport.send_trigger('end_baseline')
 
-
+# Prosocial Behavior Task
 for trial in trials:
 
 	## decide what to offer this trial
