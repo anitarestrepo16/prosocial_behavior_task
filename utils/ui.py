@@ -338,4 +338,31 @@ def present_feedback(win, trial, choice, success):
 	present_text(win, outcome)
 	return (points_self, points_other)
 	
+def fatigue_segment(win):
+	'''
+	Present a slider for subjects to rate fatigue from
+		0 to 100 and return the rating.
+
+	Arguments:
+		win: psychopy window to present stimuli on
 	
+	Returns fatigue rating (int). 
+	'''
+	# create rating scale
+	fatigue_scale = visual.RatingScale(win, low = 0, high = 100,
+				    scale = None, 
+					tickMarks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+					marker = 'slider', markerStart = 50,
+					markerColor = 'DarkRed', stretch = 2)
+	# create instruction message
+	msg = visual.TextStim(win, 
+			text = "Rate your current fatigue from 0 to 100:",
+			color = "white", pos = (0,0))
+		
+	# draw and collect response
+	while fatigue_scale.noResponse:
+		msg.draw()
+		fatigue_scale.draw()
+		win.flip()
+	
+	return fatigue_scale.getRating()
