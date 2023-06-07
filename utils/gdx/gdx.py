@@ -7,7 +7,7 @@ import logging
 import time    
 
 # gdx_vpython.py contains functions for a canvas with data collection buttons
-from gdx import gdx_vpython
+from utils.gdx import gdx_vpython
 vp = gdx_vpython.ver_vpython()
 
 

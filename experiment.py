@@ -21,6 +21,7 @@ from utils.write import (
 	CSVWriter_subj
 ) 
 from utils.triggerer import Triggerer
+from utils.gdx import gdx_vpython
 from utils.gdx import gdx
 
 #### initialize some things
