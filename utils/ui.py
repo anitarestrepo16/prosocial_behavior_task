@@ -361,6 +361,12 @@ def present_feedback(win, trial, choice, success):
 			points_self = 0
 			points_other = 0
 	
+	# sanity check
+	if points_self != 0:
+		assert points_other == 0
+	if points_other != 0:
+		assert points_self == 0
+	
 	present_text(win, outcome)
 	return (points_self, points_other)
 	
