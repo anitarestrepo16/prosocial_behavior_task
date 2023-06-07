@@ -50,6 +50,13 @@ points_other = 0
 trial_num = 1
 block_num = 1
 
+# practice trials
+practice_trials = [
+	'self_reward',
+	'other_reward',
+	'self_punishment',
+	'other_punishment'
+]
 
 # make trials list
 trials_per_type = 2
@@ -94,8 +101,27 @@ BREAK_TIME = 0.5
 
 # Instructions  
 txt = '''
-Instructions for getting MVC.
-(press spacebar to continue through instructions)
+First we're going to measure your maximum grip strength. 
+Grab the hand dynamometer with your dominant hand so that the 
+blue pieces are at the top and the cable is coming out the bottom
+of the device. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Wrap your hand around the dynamometer so
+that the heel of your palm is against the bottom long blue piece
+and your fingers wrap around the top blue piece.\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+After a short countdown, please squeeze the hand dynamometer 
+as tightly as you can until the screen switches to the next task. 
+Position your dominant hand on the hand dynamometer now.\n
+Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
@@ -111,8 +137,9 @@ subj_log.write(subj_num, max_grip)
 
 # Instructions
 txt = '''
-Instructions for Baseline Physio.
-(press spacebar to continue through instructions)
+Now we are going to collect a 5-minute baseline measurement for the ECG. 
+Sit comfortably, relax and breathe normally. \n
+Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
@@ -129,8 +156,66 @@ t1 = time()
 
 # Instructions
 txt = '''
-Instructions for task.
-(press spacebar to continue through instructions)
+We are now going to begin the main part of the experiment. 
+For each trial in this task you will be given an offer to work to 
+either earn points or avoid losing points. You will then be given 
+the choice to either "work" or "rest". \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+If you choose to work, you'll be asked to squeeze the hand dynamometer
+to a target level for 3 seconds. If you succeed, you will successfully
+obtain the offer. For some offers, the points earned or lost will be applied 
+to you while for other offers the points will go to the next participant. You'll
+be told who the target of the offer is at the beginning of each trial. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+After each trial, you will receive feedback as to whether you succeeded
+or failed (if you decided to work) and the number of points earned or lost
+for the trial's target. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Let's do a practice run. Grip the hand dynamometer in your dominant 
+hand. \n
+Press the spacebar when you're ready for the practice round.
+'''
+wait_for_keypress(win, txt)
+
+# Practice
+for trial in practice_trials:
+	# offer
+	offer = decide_offer(trial)
+	present_text(win, offer)
+	# fixation
+	fixation_cross(win)
+	# choice
+	choice = present_choice(win)
+	# fixation
+	fixation_cross(win)
+	# work/rest
+	avg_grip, success = work_rest_segment(win, choice, grip, max_grip, ANCHOR_Y)
+	# fixation
+	fixation_cross(win)
+	# feeback
+	points = present_feedback(win, trial, choice, success)
+	# fixation (ITI)
+	fixation_cross(win)
+
+txt = '''
+Now you're ready for the real task. You will complete a total of 100 trials. 
+After every 25 trials you'll be asked to rate your fatigue levels and will 
+be able to take a short break. Make sure to hold the hand dynamometer
+exclusively in your dominant hand throughout the task. We'll start
+with a fatigue rating. \n
+Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 

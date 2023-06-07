@@ -318,19 +318,19 @@ def present_feedback(win, trial, choice, success):
 	# if worked and succeeded
 	elif ('left' in choice) & (success):
 		if trial == 'self_reward':
-			outcome = "Success! +10 points for you"
+			outcome = "Success! \n +10 points for you"
 			points_self = 10
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "Success! -0 points for you"
+			outcome = "Success! \n -0 points for you"
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = 'Success! +10 points for the next participant'
+			outcome = 'Success! \n +10 points for the next participant'
 			points_self = 0
 			points_other = 10
 		elif trial == 'other_punishment':
-			outcome = 'Success! -0 points for the next participant'
+			outcome = 'Success! \n -0 points for the next participant'
 			points_self = 0
 			points_other = 0
 		else:
@@ -341,19 +341,19 @@ def present_feedback(win, trial, choice, success):
 	# if worked and failed
 	elif ('left' in choice) & (not success):
 		if trial == 'self_reward':
-			outcome = "Failed. +0 points for you"
+			outcome = "Failed. \n +0 points for you"
 			points_self = 0
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "Failed. -10 points for you"
+			outcome = "Failed. \n -10 points for you"
 			points_self = -10
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = 'Failed. +0 points for the next participant'
+			outcome = 'Failed. \n +0 points for the next participant'
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_punishment':
-			outcome = 'Failed. -10 points for the next participant'
+			outcome = 'Failed. \n -10 points for the next participant'
 			points_self = 0
 			points_other = -10
 		else:
