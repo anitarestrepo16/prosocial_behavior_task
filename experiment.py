@@ -75,6 +75,8 @@ blocks = [block1, block2, block3, block4]
 # psychopy viz
 win = visual.Window(
 	size = (800, 600),
+	color = (0, 0, 0),
+	colorSpace = 'rgb255',
 	screen = -1,
 	units = "norm",
 	fullscr = False,
@@ -195,7 +197,7 @@ for block in blocks:
 	block_log.write(block_num, fatigue_rating)
 
 	# short break
-	present_text(win, 'You can take a short break now.', BREAK_TIME)
+	present_text(win, 'You can take a short break now.', 'white', BREAK_TIME)
 	wait_for_keypress(win, 'Press the spacebar to continue the task.')
 	block_num += 1
 	# block end

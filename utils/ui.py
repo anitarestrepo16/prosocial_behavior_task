@@ -13,11 +13,11 @@ def fixation_cross(win):
 	win.flip()
 	core.wait(np.random.uniform(.2, .4))
 
-def present_text(win, text_block, display_time = 1):
+def present_text(win, text_block, text_col = 'white', display_time = 1):
 	'''
 	Displays a block of text on the screen.
 	'''
-	msg = visual.TextStim(win, text = text_block, color = "white", pos = (0,0))
+	msg = visual.TextStim(win, text = text_block, color = text_col, pos = (0,0))
 	msg.draw()
 	win.flip()
 	core.wait(display_time)
@@ -35,12 +35,12 @@ def decide_offer(trial):
 	Returns text to be shown as offer depending on trial type.
 	'''
 	# targets
-	target_self = "you"
-	target_other = "the next participant"
+	target_self = "Yourself"
+	target_other = "the Next Participant"
 
 	# trial types
-	offer_reward = "Exert Effort to Win 10 Points for "
-	offer_punishment = "Exert Effort to Avoid Losing 10 Points for "
+	offer_reward = "Work to Earn 10 Points for "
+	offer_punishment = "Work to Avoid Losing 10 Points for "
 
 	# decision tree
 	if trial == 'self_reward':
@@ -62,10 +62,10 @@ def present_choice(win):
 	  (left or right arrow keys)
 	  and records keypress. 
     '''
-	left_choice_message = visual.TextStim(win, color = "blue", pos = (-0.3, 0),
+	left_choice_message = visual.TextStim(win, color = "SteelBlue", pos = (-0.3, 0),
                                   text = 'Press the \nleft arrow key \nto work')
 	left_choice_message.draw()
-	right_choice_message = visual.TextStim(win, color = "red", pos = (+0.3, 0),
+	right_choice_message = visual.TextStim(win, color = "Chocolate", pos = (+0.3, 0),
                                   text = ' Press the \nright arrow key \nto rest')
 	right_choice_message.draw()
 	win.flip()
@@ -133,8 +133,11 @@ def draw_grip(win, y_anchor, force, MVC):
 		force (float): the grip strength force exerted
 		MVC (float): max voluntary contraction
 	'''
+	# rescale newtons to pixels
+	MVC_pix = MVC/MVC
+	force_pix = force/MVC
 	# set target bar
-	target = y_anchor + MVC*0.7 # anchor plus 70% of MVC
+	target = y_anchor + MVC_pix*0.7 # anchor plus 70% of MVC
 	target_bar = visual.Line(win)
 	target_bar.start = (-0.3, target)
 	target_bar.end = (0.3, target)
@@ -142,7 +145,7 @@ def draw_grip(win, y_anchor, force, MVC):
 	# set force bar
 	force_bar = visual.rect.Rect(win, pos = (0, y_anchor), anchor = 'bottom')
 	force_bar.color = 'white'
-	force_bar.height = force
+	force_bar.height = force_pix
 
 	# draw
 	target_bar.draw()
@@ -217,7 +220,7 @@ def get_MVC(win, gdx_obj, sample_time):
 	present_text(win, '3, 2, 1')
 
 	# Grip
-	present_text(win, 'SQUEEZE', 0.1)
+	present_text(win, 'SQUEEZE', 'white', 0.1)
 	measurements = get_squeeze(gdx_obj, sample_time)
 	return np.max(measurements)
 
@@ -262,7 +265,7 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 		present_text(win, '3, 2, 1')
 
 		# Grip
-		present_text(win, 'SQUEEZE', 0.1)
+		present_text(win, 'SQUEEZE', 'white', 0.1)
 		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
 		return (avg_grip, success)
 
@@ -282,29 +285,52 @@ def present_feedback(win, trial, choice, success):
 	Present text with points lost or gained and return
 		number of points.
 	'''
+	# default
 	outcome = 'nothing'
+	
 	# if chose rest
 	if ('right' in choice):
-		outcome = "No points earned or lost."
-		points_self = 0
-		points_other = 0
+		# if self reward trial
+		if (trial == 'self_reward'):
+			outcome = "+1 point for you"
+			points_self = 1
+			points_other = 0
+		# if other reward trial
+		elif (trial == 'other_reward'):
+			outcome = "+1 point for the next participant"
+			points_self = 0
+			points_other = 1
+		# if self punishment trial
+		elif (trial == 'self_punishment'):
+			outcome = "-1 point for you"
+			points_self = -1
+			points_other = 0
+		# if other punishment trial
+		elif (trial == 'other_punishment'):
+			outcome = "-1 point for the next participant"
+			points_self = 0
+			points_other = -1
+		else:
+			outcome = 'Warning, wrong input'
+			points_self = 0
+			points_other = 0
 	
 	# if worked and succeeded
 	elif ('left' in choice) & (success):
 		if trial == 'self_reward':
-			outcome = "+10 points for you"
+			outcome = "Success! +10 points for you"
 			points_self = 10
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "-0 points for you"
+			outcome = "Success! -0 points for you"
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = '+10 points for the next participant'
+			outcome = 'Success! +10 points for the next participant'
 			points_self = 0
 			points_other = 10
 		elif trial == 'other_punishment':
-			outcome = '-0 points for the next participant'
+			outcome = 'Success! -0 points for the next participant'
 			points_self = 0
 			points_other = 0
 		else:
@@ -315,19 +341,19 @@ def present_feedback(win, trial, choice, success):
 	# if worked and failed
 	elif ('left' in choice) & (not success):
 		if trial == 'self_reward':
-			outcome = "+0 points for you"
+			outcome = "Failed. +0 points for you"
 			points_self = 0
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "-10 points for you"
+			outcome = "Failed. -10 points for you"
 			points_self = -10
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = '+0 points for the next participant'
+			outcome = 'Failed. +0 points for the next participant'
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_punishment':
-			outcome = '-10 points for the next participant'
+			outcome = 'Failed. -10 points for the next participant'
 			points_self = 0
 			points_other = -10
 		else:
