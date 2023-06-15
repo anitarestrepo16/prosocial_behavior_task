@@ -8,6 +8,7 @@ from utils.ui import (
     present_text,
     wait_for_keypress,
     decide_offer,
+    present_offer,
     present_choice,
     translate_choice,
     work_rest_segment,
@@ -81,7 +82,7 @@ blocks = [block1, block2, block3, block4]
 
 # psychopy viz
 win = visual.Window(
-	size = (800, 600),
+	size = (1600, 1000),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
 	screen = -1,
@@ -93,21 +94,28 @@ win = visual.Window(
 ANCHOR_Y = -0.5
 MVC_TIME = 3
 BASELINE_TIME = 3
+OFFER_TIME = 1
+FEEDBACK_TIME = 1
 BREAK_TIME = 0.5
+
+dynamo = visual.ImageStim(win, 'Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
+grip_right = visual.ImageStim(win, 'grip_right.jpg', pos = (0, -0.5))
 
 ########################
 # Maximum Voluntary Contraction (MVC)
 ########################
 
-# Instructions  
+# Instructions 
+
+dynamo.draw()
 txt = '''
-First we're going to measure your maximum grip strength. 
-You will be holding the grip strength sensor (pictured below) with
-your dominant hand at all times. \n
+First we're going to measure your maximum grip strength using
+ the grip strength sensor (pictured below). \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
+grip_right.draw()
 txt = '''
 This is the way you should hold the grip strength sensor. 
 Make sure your fingers are wrapped tightly around it like
@@ -205,8 +213,8 @@ wait_for_keypress(win, txt)
 # Practice
 for trial in practice_trials:
 	# offer
-	offer = decide_offer(trial)
-	present_text(win, offer)
+	type, target = decide_offer(trial)
+	present_offer(win, type, target, OFFER_TIME)
 	# fixation
 	fixation_cross(win)
 	# choice
@@ -218,7 +226,7 @@ for trial in practice_trials:
 	# fixation
 	fixation_cross(win)
 	# feeback
-	points = present_feedback(win, trial, choice, success)
+	points = present_feedback(win, trial, choice, success, FEEDBACK_TIME)
 	# fixation (ITI)
 	fixation_cross(win)
 
@@ -253,10 +261,10 @@ for block in blocks:
 	for trial in block:
 
 		# decide what to offer this trial
-		offer = decide_offer(trial)
+		type, target = decide_offer(trial)
 		# show offer
 		parport.send_trigger('show_offer')
-		present_text(win, offer)
+		present_offer(win, type, target, OFFER_TIME)
 		# fixation
 		fixation_cross(win)
 		# choice
@@ -272,7 +280,7 @@ for block in blocks:
 		fixation_cross(win)
 		# feeback
 		parport.send_trigger('feedback')
-		points = present_feedback(win, trial, choice, success)
+		points = present_feedback(win, trial, choice, success, FEEDBACK_TIME)
 		# keep track of point changes
 		points_self += points[0]
 		points_other += points[1]
@@ -285,7 +293,6 @@ for block in blocks:
 			block_num,
 			trial_num,
 			trial,
-			offer,
 			choice,
 			avg_grip, 
 			success,

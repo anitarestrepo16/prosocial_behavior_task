@@ -13,11 +13,11 @@ def fixation_cross(win):
 	win.flip()
 	core.wait(np.random.uniform(.2, .4))
 
-def present_text(win, text_block, text_col = 'white', display_time = 1):
+def present_text(win, text_block, text_col = 'white', display_time = 1, position = (0, 0)):
 	'''
 	Displays a block of text on the screen.
 	'''
-	msg = visual.TextStim(win, text = text_block, color = text_col, pos = (0,0))
+	msg = visual.TextStim(win, text = text_block, color = text_col, pos = position)
 	msg.draw()
 	win.flip()
 	core.wait(display_time)
@@ -27,7 +27,7 @@ def wait_for_keypress(win, message = ''):
 	Wait until subject presses spacebar.
 	'''
 	if message:
-		present_text(win, message)
+		present_text(win = win, text_block = message, position = (0, 0.5))
 	event.waitKeys(keyList = ["space"]) # wait until subject responds
 
 def decide_offer(trial):
@@ -35,26 +35,52 @@ def decide_offer(trial):
 	Returns text to be shown as offer depending on trial type.
 	'''
 	# targets
-	target_self = "Yourself"
-	target_other = "the Next Participant"
+	target_self = "YOURSELF"
+	target_other = "THE NEXT PARTICIPANT"
 
 	# trial types
-	offer_reward = "Work to Earn 10 Points for "
-	offer_punishment = "Work to Avoid Losing 10 Points for "
+	offer_reward = "EARN"
+	offer_punishment = "AVOID LOSING"
 
 	# decision tree
 	if trial == 'self_reward':
-		offer = offer_reward + target_self
+		offer = (offer_reward, target_self)
 	elif trial == 'self_punishment':
-		offer = offer_punishment + target_self
+		offer = (offer_punishment, target_self)
 	elif trial == 'other_reward':
-		offer = offer_reward + target_other
+		offer = (offer_reward, target_other)
 	elif trial == 'other_punishment':
-		offer = offer_punishment + target_other
+		offer = (offer_punishment, target_other)
 	else:
-		offer = "Warning, wrong input"
+		offer = ("Warning", "wrong input")
 	return offer
 
+def present_offer(win, type, target, display_time):
+	'''
+	Present offer with key words color-coded.
+	'''
+	str1 = visual.TextStim(win, "Offer: Work to", color = 'white',
+			       pos = (0, 0.6))
+	if type == 'EARN':
+		type_col = 'pink'
+	elif type == 'AVOID LOSING':
+		type_col = 'forestgreen'
+	type_txt = visual.TextStim(win, type, color = type_col,
+					pos = (0, 0.4))
+	str2 = visual.TextStim(win, "10 points for", color = 'white',
+					pos = (0, 0.2))
+	if target == 'YOURSELF':
+		target_col = 'gold'
+	elif target == 'THE NEXT PARTICIPANT':
+		target_col = 'mediumslateblue'
+	target_txt = visual.TextStim(win, target, color = target_col,
+					pos = (0, 0))
+	str1.draw()
+	type_txt.draw()
+	str2.draw()
+	target_txt.draw()
+	win.flip()
+	core.wait(display_time)
 
 def present_choice(win):
 	'''
@@ -63,10 +89,10 @@ def present_choice(win):
 	  and records keypress. 
     '''
 	left_choice_message = visual.TextStim(win, color = "SteelBlue", pos = (-0.3, 0),
-                                  text = 'Press the \nleft arrow key \nto work')
+                                  text = 'WORK \n <--')
 	left_choice_message.draw()
 	right_choice_message = visual.TextStim(win, color = "Chocolate", pos = (+0.3, 0),
-                                  text = ' Press the \nright arrow key \nto rest')
+                                  text = 'REST \n -->')
 	right_choice_message.draw()
 	win.flip()
 	return event.waitKeys(keyList = ['left', 'right'])
@@ -142,6 +168,9 @@ def draw_grip(win, y_anchor, force, MVC):
 	target_bar.start = (-0.3, target)
 	target_bar.end = (0.3, target)
 	target_bar.color = 'red'
+	# set target text
+	target_txt = visual.TextStim(win, "<-- TARGET", color = 'red',
+			       pos = (0.3, target), alignText = 'left', anchorHoriz = 'left')
 	# set force bar
 	force_bar = visual.rect.Rect(win, pos = (0, y_anchor), anchor = 'bottom')
 	force_bar.color = 'white'
@@ -149,6 +178,7 @@ def draw_grip(win, y_anchor, force, MVC):
 
 	# draw
 	target_bar.draw()
+	target_txt.draw()
 	force_bar.draw()
 	win.flip()
 	
@@ -202,6 +232,7 @@ def get_squeeze_and_viz(gdx_obj, sample_time, win, y_anchor, MVC):
 		measurements.append(measurement[0])
 		t = time()
 	gdx_obj.stop()
+	present_text(win, 'STOP', 'red', 0.5)
 	return measurements
 
 def get_MVC(win, gdx_obj, sample_time):
@@ -222,6 +253,7 @@ def get_MVC(win, gdx_obj, sample_time):
 	# Grip
 	present_text(win, 'SQUEEZE', 'white', 0.1)
 	measurements = get_squeeze(gdx_obj, sample_time)
+	present_text(win, 'STOP', 'red', 0.5)
 	return np.max(measurements)
 
 
@@ -280,34 +312,38 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 		# catch all
 		present_text(win, 'Please make a choice.')
 
-def present_feedback(win, trial, choice, success):
+def present_feedback(win, trial, choice, success, display_time):
 	'''
 	Present text with points lost or gained and return
 		number of points.
 	'''
 	# default
 	outcome = 'nothing'
-	
+	target =  'no one'
 	# if chose rest
 	if ('right' in choice):
 		# if self reward trial
 		if (trial == 'self_reward'):
-			outcome = "+1 point for you"
+			outcome = "+1 point for"
+			target = 'YOU'
 			points_self = 1
 			points_other = 0
 		# if other reward trial
 		elif (trial == 'other_reward'):
-			outcome = "+1 point for the next participant"
+			outcome = "+1 point for"
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = 1
 		# if self punishment trial
 		elif (trial == 'self_punishment'):
-			outcome = "-1 point for you"
+			outcome = "-1 point for"
+			target = 'YOU'
 			points_self = -1
 			points_other = 0
 		# if other punishment trial
 		elif (trial == 'other_punishment'):
-			outcome = "-1 point for the next participant"
+			outcome = "-1 point for"
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = -1
 		else:
@@ -318,19 +354,23 @@ def present_feedback(win, trial, choice, success):
 	# if worked and succeeded
 	elif ('left' in choice) & (success):
 		if trial == 'self_reward':
-			outcome = "Success! \n +10 points for you"
+			outcome = "Success! \n +10 points for"
+			target = 'YOU'
 			points_self = 10
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "Success! \n -0 points for you"
+			outcome = "Success! \n -0 points for"
+			target = 'YOU'
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = 'Success! \n +10 points for the next participant'
+			outcome = 'Success! \n +10 points for'
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = 10
 		elif trial == 'other_punishment':
-			outcome = 'Success! \n -0 points for the next participant'
+			outcome = 'Success! \n -0 points for'
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = 0
 		else:
@@ -341,19 +381,23 @@ def present_feedback(win, trial, choice, success):
 	# if worked and failed
 	elif ('left' in choice) & (not success):
 		if trial == 'self_reward':
-			outcome = "Failed. \n +0 points for you"
+			outcome = "Failed. \n +0 points for"
+			target = 'YOU'
 			points_self = 0
 			points_other = 0
 		elif trial == 'self_punishment':
-			outcome = "Failed. \n -10 points for you"
+			outcome = "Failed. \n -10 points for"
+			target = 'YOU'
 			points_self = -10
 			points_other = 0
 		elif trial == 'other_reward':
-			outcome = 'Failed. \n +0 points for the next participant'
+			outcome = 'Failed. \n +0 points for'
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = 0
 		elif trial == 'other_punishment':
-			outcome = 'Failed. \n -10 points for the next participant'
+			outcome = 'Failed. \n -10 points for'
+			target = 'THE NEXT PARTICIPANT'
 			points_self = 0
 			points_other = -10
 		else:
@@ -361,13 +405,25 @@ def present_feedback(win, trial, choice, success):
 			points_self = 0
 			points_other = 0
 	
+	if target == 'YOU':
+		target_col = 'gold'
+	elif target == 'THE NEXT PARTICIPANT':
+		target_col = 'mediumslateblue'
+
 	# sanity check
 	if points_self != 0:
 		assert points_other == 0
 	if points_other != 0:
 		assert points_self == 0
 	
-	present_text(win, outcome)
+	outcome_txt = visual.TextStim(win, outcome, color = 'white',
+					pos = (0, 0.4))
+	target_txt = visual.TextStim(win, target, color = target_col,
+					pos = (0, 0))
+	outcome_txt.draw()
+	target_txt.draw()
+	win.flip()
+	core.wait(display_time)
 	return (points_self, points_other)
 	
 def fatigue_segment(win):
