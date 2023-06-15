@@ -102,24 +102,24 @@ BREAK_TIME = 0.5
 # Instructions  
 txt = '''
 First we're going to measure your maximum grip strength. 
-Grab the hand dynamometer with your dominant hand so that the 
-blue pieces are at the top and the cable is coming out the bottom
-of the device. \n
+You will be holding the grip strength sensor (pictured below) with
+your dominant hand at all times. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-Wrap your hand around the dynamometer so
-that the heel of your palm is against the bottom long blue piece
-and your fingers wrap around the top blue piece.\n
+This is the way you should hold the grip strength sensor. 
+Make sure your fingers are wrapped tightly around it like
+in the picture. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-After a short countdown, please squeeze the hand dynamometer 
-as tightly as you can until the screen switches to the next task. 
+You will see a countdown on the screen from 3 to 1. Then the word SQUEEZE
+will appear on the screen. As soon as you see this, squeeze the hand dynamometer 
+as tightly as you can until the word STOP appears on the screen (~3 seconds). 
 Position your dominant hand on the hand dynamometer now.\n
 Press the spacebar when you're ready to begin.
 '''
@@ -137,8 +137,10 @@ subj_log.write(subj_num, max_grip)
 
 # Instructions
 txt = '''
-Now we are going to collect a 5-minute baseline measurement for the ECG. 
-Sit comfortably, relax and breathe normally. \n
+Now we are going to collect a baseline measurement for the ECG. 
+The word RELAX will appear on the screen for 5 minutes. Just sit comfortably,
+ relax and breathe normally. The screen will let you know when it is time
+ for the next task. \n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
@@ -156,28 +158,39 @@ t1 = time()
 
 # Instructions
 txt = '''
-We are now going to begin the main part of the experiment. 
-For each trial in this task you will be given an offer to work to 
-either earn points or avoid losing points. You will then be given 
-the choice to either "work" or "rest". \n
+We are now going to play a game. In the game you can choose to 
+WORK to get points by squeezing the grip strength sensor or REST. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-If you choose to work, you'll be asked to squeeze the hand dynamometer
-to a target level for 3 seconds. If you succeed, you will successfully
-obtain the offer. For some offers, the points earned or lost will be applied 
-to you while for other offers the points will go to the next participant. You'll
-be told who the target of the offer is at the beginning of each trial. \n
+If you choose to WORK, you can win the trial by squeezing the grip sensor
+to a TARGET level (represented by a red line) for 3 seconds. If you don't squeeze 
+at or above the TARGET you will fail the trial. If you choose to REST, you will
+just sit quietly for 3 seconds. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-After each trial, you will receive feedback as to whether you succeeded
-or failed (if you decided to work) and the number of points earned or lost
-for the trial's target. \n
+For some rounds you WORK to EARN points and for other rounds you WORK to
+AVOID LOSING points. At the start of each round the screen will tell you
+which type of round it is. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Likewise, for some rounds the points earned or lost go to YOU and for some
+rounds the points go to the NEXT PARTICIPANT. At the start of each round 
+the screen will also tell you who the points will go to for that round. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+After each round, you will receive feedback. Here are the possible outcomes: \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -210,11 +223,17 @@ for trial in practice_trials:
 	fixation_cross(win)
 
 txt = '''
-Now you're ready for the real task. You will complete a total of 100 trials. 
-After every 25 trials you'll be asked to rate your fatigue levels and will 
+Now you're ready for the real game. You will complete a total of 100 trials. 
+After every 25 trials you'll be asked to rate how tired you feel and will 
 be able to take a short break. Make sure to hold the hand dynamometer
 exclusively in your dominant hand throughout the task. We'll start
-with a fatigue rating. \n
+with a tiredness rating. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+Use the mouse to rate your tiredness on the scale. \n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
@@ -226,6 +245,7 @@ parport.send_trigger('fatigue_start')
 fatigue_rating = fatigue_segment(win)
 parport.send_trigger('fatigue_start')
 block_log.write(0, fatigue_rating)
+wait_for_keypress(win, 'Press the spacebar to start the task.')
 
 # cycle through blocks
 for block in blocks:
