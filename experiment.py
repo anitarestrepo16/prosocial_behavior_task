@@ -120,6 +120,7 @@ wait_for_keypress(win, txt)
 
 grip_right.draw()
 txt = '''
+\n
 This is the way you should hold the grip strength sensor. 
 Make sure your fingers are wrapped tightly around it like
 in the picture. \n
