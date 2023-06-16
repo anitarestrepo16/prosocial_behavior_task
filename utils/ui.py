@@ -27,7 +27,7 @@ def wait_for_keypress(win, message = ''):
 	Wait until subject presses spacebar.
 	'''
 	if message:
-		present_text(win = win, text_block = message, position = (0, 0.5))
+		present_text(win = win, text_block = message, position = (0, 0.2))
 	event.waitKeys(keyList = ["space"]) # wait until subject responds
 
 def decide_offer(trial):

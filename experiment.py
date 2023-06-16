@@ -98,8 +98,11 @@ OFFER_TIME = 1
 FEEDBACK_TIME = 1
 BREAK_TIME = 0.5
 
-dynamo = visual.ImageStim(win, 'Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
-grip_right = visual.ImageStim(win, 'grip_right.jpg', pos = (0, -0.5))
+dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
+grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.1))
+choice_img = visual.ImageStim(win, 'image_stim/choice.png', pos = (0, -0.2))
+rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-300, 0), size = (640, 360), units = "pix")
+work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, 0), size = (640, 360), units = "pix")
 
 ########################
 # Maximum Voluntary Contraction (MVC)
@@ -120,11 +123,15 @@ txt = '''
 This is the way you should hold the grip strength sensor. 
 Make sure your fingers are wrapped tightly around it like
 in the picture. \n
+\n
+\n
+\n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
+\n 
 You will see a countdown on the screen from 3 to 1. Then the word SQUEEZE
 will appear on the screen. As soon as you see this, squeeze the hand dynamometer 
 as tightly as you can until the word STOP appears on the screen (~3 seconds). 
@@ -145,6 +152,7 @@ subj_log.write(subj_num, max_grip)
 
 # Instructions
 txt = '''
+\n
 Now we are going to collect a baseline measurement for the ECG. 
 The word RELAX will appear on the screen for 5 minutes. Just sit comfortably,
  relax and breathe normally. The screen will let you know when it is time
@@ -165,14 +173,20 @@ parport.send_trigger('baseline_end')
 t1 = time()
 
 # Instructions
+choice_img.draw()
 txt = '''
+\n
 We are now going to play a game. In the game you can choose to 
-WORK to get points by squeezing the grip strength sensor or REST. \n
+WORK to get points by pressing the left arrow key or REST by 
+pressing the right arrow key. This is what the choice screen will look like: \n
+\n
+\n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
+\n
 If you choose to WORK, you can win the trial by squeezing the grip sensor
 to a TARGET level (represented by a red line) for 3 seconds. If you don't squeeze 
 at or above the TARGET you will fail the trial. If you choose to REST, you will
@@ -182,28 +196,38 @@ Press the spacebar to continue.
 wait_for_keypress(win, txt)
 
 txt = '''
-For some rounds you WORK to EARN points and for other rounds you WORK to
-AVOID LOSING points. At the start of each round the screen will tell you
-which type of round it is. \n
+\n
+For some trials you WORK to EARN points and for other trials you WORK to
+AVOID LOSING points. At the start of each trial the screen will tell you
+which type of trial it is. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-Likewise, for some rounds the points earned or lost go to YOU and for some
-rounds the points go to the NEXT PARTICIPANT. At the start of each round 
-the screen will also tell you who the points will go to for that round. \n
+\n
+Likewise, for some trials the points earned or lost go to YOU and for some
+trials the points go to the NEXT PARTICIPANT. At the start of each trial 
+the screen will also tell you who the points will go to for that trial. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+rest_points.draw()
+work_points.draw()
+txt = '''
+\n
+After each trial, you will receive feedback on the points earned or lost.
+ Here are the possible outcomes: \n
+ \n
+ \n
+ \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-After each round, you will receive feedback. Here are the possible outcomes: \n
-Press the spacebar to continue.
-'''
-wait_for_keypress(win, txt)
-
-txt = '''
+\n
 Let's do a practice run. Grip the hand dynamometer in your dominant 
 hand. \n
 Press the spacebar when you're ready for the practice round.
