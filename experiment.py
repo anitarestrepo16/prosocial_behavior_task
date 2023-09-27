@@ -112,7 +112,7 @@ work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, 0)
 
 dynamo.draw()
 txt = '''
-First we're going to measure your maximum grip strength using
+First we're going to measure your grip strength 3 times using
  the grip strength sensor (pictured below). \n
 Press the spacebar to continue.
 '''
@@ -136,12 +136,56 @@ txt = '''
 You will see a countdown on the screen from 3 to 1. Then the word SQUEEZE
 will appear on the screen. As soon as you see this, squeeze the hand dynamometer 
 as tightly as you can until the word STOP appears on the screen (~3 seconds). 
+\n
+Press the spacebar to see an example.
+'''
+wait_for_keypress(win, txt)
+
+# Example MVC
+present_text(win, '3')
+present_text(win, '3, 2')
+present_text(win, '3, 2, 1')
+present_text(win, 'SQUEEZE', 'white', 3)
+present_text(win, 'STOP', 'red', 0.5)
+
+grip_right.draw()
+txt = '''
+\n
 Position your dominant hand on the hand dynamometer now.\n
+\n
+\n
+\n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
-# Get MVC
+# Get MVC 1
+parport.send_trigger('MVC_start')
+max_grip = get_MVC(win, grip, MVC_TIME)
+parport.send_trigger('MVC_end')
+subj_log.write(subj_num, max_grip)
+
+txt = '''
+\n
+Take a few seconds to rest.\n
+Press the spacebar when you're ready to go again.
+'''
+wait_for_keypress(win, txt)
+
+# Get MVC 2
+parport.send_trigger('MVC_start')
+max_grip = get_MVC(win, grip, MVC_TIME)
+parport.send_trigger('MVC_end')
+subj_log.write(subj_num, max_grip)
+
+txt = '''
+\n
+Take a few seconds to rest.\n
+Press the spacebar when you're ready to go again.
+'''
+wait_for_keypress(win, txt)
+
+# Get MVC 3
 parport.send_trigger('MVC_start')
 max_grip = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
@@ -154,8 +198,8 @@ subj_log.write(subj_num, max_grip)
 # Instructions
 txt = '''
 \n
-Now we are going to collect a baseline measurement for the ECG. 
-The word RELAX will appear on the screen for 5 minutes. Just sit comfortably,
+Now you will sit quietly for 5 minutes. 
+The word RELAX will appear on the screen. Just sit comfortably,
  relax and breathe normally. The screen will let you know when it is time
  for the next task. \n
 Press the spacebar when you're ready to begin.
@@ -174,12 +218,120 @@ parport.send_trigger('baseline_end')
 t1 = time()
 
 # Instructions
+txt = '''
+\n
+Now we will play a game. For some rounds you'll be playing
+for yourself and for other rounds you'll be playing for the next
+participant.
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+in the game you will win or lose points by squeezing the 
+grip strength sensor. The number of points you win will determine
+how much extra cash you get to take home.
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+For half the rounds, the points will go to YOU while for the other
+half of the rounds the points go to the NEXT PARTICIPANT. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+The points that the previous participant won for you will 
+be added to the points you win during the game for an extra cash prize. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+At the start of each round you will see an "Offer" on the screen
+that tells you who the points earned during that round will go to. 
+You will see either YOU or NEXT PARTICIPANT. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+The "Offer" at the start of each round will also 
+tell you whether you are playing to EARN or AVOID LOSING points
+during that round. 
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+
+# Sample Offer
+str1 = visual.TextStim(win, "Here is an example \"Offer\":\n")
+str2 = visual.TextStim(win, "Offer: Work to", color = 'white', pos = (0, 0.6))
+type_txt = visual.TextStim(win, 'AVOID LOSING', color = 'forestgreen',pos = (0, 0.4))
+str3 = visual.TextStim(win, "10 points for", color = 'white', pos = (0, 0.2))
+target_txt = visual.TextStim(win, 'THE NEXT PARTICIPANT', color = 'purple', pos = (0, 0))
+str4 = visual.TextStim(win, 'Press the spacebar to continue.', color = 'white', pos = (0, -0.4))
+str1.draw()
+str2.draw()
+type_txt.draw()
+str3.draw()
+target_txt.draw()
+str4.draw()
+win.flip()
+event.waitKeys(keyList = ["space"]) # wait until subject responds
+
 choice_img.draw()
 txt = '''
 \n
-We are now going to play a game. In the game you can choose to 
-WORK to get points by pressing the left arrow key or REST by 
-pressing the right arrow key. This is what the choice screen will look like: \n
+Once you see the "Offer", you have the option to either WORK to obtain
+the "Offer" or REST. This is what the choice screen looks like: \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+choice_img.draw()
+txt = '''
+\n
+To choose WORK, you press the left arrow key. To choose REST, you 
+press the right arrow key. \n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need target image
+txt = '''
+\n
+If you choose to WORK, you succeed by squeezing the grip sensor
+to a predetermined TARGET level for 1 second. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+####### need target image
+txt = '''
+\n
+If you don't squeeze at or above the TARGET level for 1 second 
+you will fail the round. If you don't squeeze 
+at or above the TARGET you will fail the trial. \n
+\n
 \n
 \n
 Press the spacebar to continue.
@@ -188,9 +340,7 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-If you choose to WORK, you can win the trial by squeezing the grip sensor
-to a TARGET level (represented by a red line) for 3 seconds. If you don't squeeze 
-at or above the TARGET you will fail the trial. If you choose to REST, you will
+If you choose to REST, you will
 just sit quietly for 3 seconds. \n
 Press the spacebar to continue.
 '''
@@ -198,18 +348,104 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-For some trials you WORK to EARN points and for other trials you WORK to
-AVOID LOSING points. At the start of each trial the screen will tell you
-which type of trial it is. \n
+After each round, you will receive feedback on the points
+won or lost for that round. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
 \n
-Likewise, for some trials the points earned or lost go to YOU and for some
-trials the points go to the NEXT PARTICIPANT. At the start of each trial 
-the screen will also tell you who the points will go to for that trial. \n
+If you choose to WORK and succeed, you will win 10 points
+for an EARN round or lose 0 points for an AVOID LOSING round. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+If you choose to WORK and fail, you will win 0 points
+for an EARN round or lose 10 points for an AVOID LOSING round. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need work EARN success pic
+txt = '''
+\n
+For example, if you choose to WORK to EARN 10 points
+and succeed, you will successfully earn the 10 points. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need work EARN fail pic
+txt = '''
+\n
+But if you choose to WORK to EARN 10 points
+and fail, you will not earn the 10 points. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need work AVOID LOSING success pic
+txt = '''
+\n
+If you choose to WORK to AVOID LOSING 10 points
+and succeed, you will successfully avoid losing the 10 points. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need work AVOID LOSING fail pic
+txt = '''
+\n
+But if you choose to WORK to AVOID LOSING 10 points
+and fail, you will lose the 10 points. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+\n
+If you choose to REST, you earn fewer points than if you chose to
+WORK and succeeded. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need rest EARN pic
+txt = '''
+\n
+For example, if the offer is to EARN points and you choose to REST,
+you will earn 1 point. \n
+\n
+\n
+\n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+###### need rest AVOID LOSING pic
+txt = '''
+\n
+If the offer is to AVOID LOSING points and you choose to REST,
+you will lose 1 point. \n
+\n
+\n
+\n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -218,8 +454,34 @@ rest_points.draw()
 work_points.draw()
 txt = '''
 \n
-After each trial, you will receive feedback on the points earned or lost.
- Here are the possible outcomes: \n
+For any type of round, choosing to REST results in better outcomes 
+than choosing to WORK and failing but worse outcomes than 
+choosing to WORK and succeeding. \n
+ \n
+ \n
+ \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+#### Need pic
+txt = '''
+\n
+So for an EARN round, choosing to WORK and succeeding gives you the 
+most points. Choosing to WORK and failing gives you the least points. \n
+ \n
+ \n
+ \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+#### Need pic
+txt = '''
+\n
+For an AVOID LOSING round, choosing to WORK and succeeding results 
+in the least points lost. Choosing to WORK and failing results 
+in the most points lost. \n
  \n
  \n
  \n
@@ -229,7 +491,7 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-Let's do a practice run. Grip the hand dynamometer in your dominant 
+Let's do a practice run. Hold the grip strength sensor in your dominant 
 hand. \n
 Press the spacebar when you're ready for the practice round.
 '''
@@ -256,17 +518,23 @@ for trial in practice_trials:
 	fixation_cross(win)
 
 txt = '''
-Now you're ready for the real game. You will complete a total of 100 trials. 
-After every 25 trials you'll be asked to rate how tired you feel and will 
-be able to take a short break. Make sure to hold the hand dynamometer
-exclusively in your dominant hand throughout the task. We'll start
-with a tiredness rating. \n
+Now you're ready for the real game. Every couple rounds you'll be asked 
+to rate how fatigued your hand is and will 
+be able to take a short break. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
 txt = '''
-Use the mouse to rate your tiredness on the scale. \n
+Make sure to hold the grip strenmgth sensor only in your dominant 
+hand throughout the task. \n
+Press the spacebar to continue.
+'''
+wait_for_keypress(win, txt)
+
+txt = '''
+We'll start with a measure of hand fatigue. 
+Use the mouse to rate your fatigue on the scale from 0 to 100. \n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)

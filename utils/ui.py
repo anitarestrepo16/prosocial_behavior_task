@@ -72,7 +72,7 @@ def present_offer(win, type, target, display_time):
 	if target == 'YOURSELF':
 		target_col = 'gold'
 	elif target == 'THE NEXT PARTICIPANT':
-		target_col = 'mediumslateblue'
+		target_col = 'purple'
 	target_txt = visual.TextStim(win, target, color = target_col,
 					pos = (0, 0))
 	str1.draw()
