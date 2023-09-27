@@ -93,11 +93,11 @@ win = visual.Window(
 	allowGUI = False
 	)
 ANCHOR_Y = -0.5
-MVC_TIME = 3
-BASELINE_TIME = 3
-OFFER_TIME = 1
-FEEDBACK_TIME = 1
-BREAK_TIME = 0.5
+MVC_TIME = 3 # 3s
+BASELINE_TIME = 3 # 5 min (300s)
+OFFER_TIME = 1 # 3.5s
+FEEDBACK_TIME = 1 # 0.5s
+BREAK_TIME = 0.5 # ???
 
 dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
 grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.1))
