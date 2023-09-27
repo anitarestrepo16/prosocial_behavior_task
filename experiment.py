@@ -14,6 +14,7 @@ from utils.ui import (
     work_rest_segment,
     present_feedback,
     get_MVC,
+    determine_MVC,
     fatigue_segment
 )
 from utils.write import (
@@ -101,8 +102,10 @@ BREAK_TIME = 0.5
 dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
 grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.1))
 choice_img = visual.ImageStim(win, 'image_stim/choice.png', pos = (0, -0.2))
-rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-300, 0), size = (640, 360), units = "pix")
-work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, 0), size = (640, 360), units = "pix")
+rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-300, -100), size = (640, 360), units = "pix")
+work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, -100), size = (640, 360), units = "pix")
+squeeze_success = visual.ImageStim(win, 'image_stim/squeeze_success.png', pos = (0, -0.1))
+squeeze_fail = visual.ImageStim(win, 'image_stim/squeeze_fail.png', pos = (0, -0.1))
 
 ########################
 # Maximum Voluntary Contraction (MVC)
@@ -151,7 +154,9 @@ present_text(win, 'STOP', 'red', 0.5)
 grip_right.draw()
 txt = '''
 \n
+\n
 Position your dominant hand on the hand dynamometer now.\n
+\n
 \n
 \n
 \n
@@ -161,9 +166,8 @@ wait_for_keypress(win, txt)
 
 # Get MVC 1
 parport.send_trigger('MVC_start')
-max_grip = get_MVC(win, grip, MVC_TIME)
+max_grip1 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
-subj_log.write(subj_num, max_grip)
 
 txt = '''
 \n
@@ -174,9 +178,8 @@ wait_for_keypress(win, txt)
 
 # Get MVC 2
 parport.send_trigger('MVC_start')
-max_grip = get_MVC(win, grip, MVC_TIME)
+max_grip2 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
-subj_log.write(subj_num, max_grip)
 
 txt = '''
 \n
@@ -187,8 +190,10 @@ wait_for_keypress(win, txt)
 
 # Get MVC 3
 parport.send_trigger('MVC_start')
-max_grip = get_MVC(win, grip, MVC_TIME)
+max_grip3 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
+
+max_grip = determine_MVC([max_grip1, max_grip2, max_grip3])
 subj_log.write(subj_num, max_grip)
 
 ########################
@@ -230,7 +235,7 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-in the game you will win or lose points by squeezing the 
+In the game you will win or lose points by squeezing the 
 grip strength sensor. The number of points you win will determine
 how much extra cash you get to take home.
 \n
@@ -240,8 +245,8 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-For half the rounds, the points will go to YOU while for the other
-half of the rounds the points go to the NEXT PARTICIPANT. \n
+For half the rounds, the points will go to YOU while for the 
+other half of the rounds the points go to the NEXT PARTICIPANT. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -257,8 +262,8 @@ wait_for_keypress(win, txt)
 txt = '''
 \n
 At the start of each round you will see an "Offer" on the screen
-that tells you who the points earned during that round will go to. 
-You will see either YOU or NEXT PARTICIPANT. \n
+that tells you who the points earned during that round will go 
+to. You will see either YOU or NEXT PARTICIPANT. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -275,11 +280,11 @@ wait_for_keypress(win, txt)
 
 
 # Sample Offer
-str1 = visual.TextStim(win, "Here is an example \"Offer\":\n")
-str2 = visual.TextStim(win, "Offer: Work to", color = 'white', pos = (0, 0.6))
-type_txt = visual.TextStim(win, 'AVOID LOSING', color = 'forestgreen',pos = (0, 0.4))
-str3 = visual.TextStim(win, "10 points for", color = 'white', pos = (0, 0.2))
-target_txt = visual.TextStim(win, 'THE NEXT PARTICIPANT', color = 'purple', pos = (0, 0))
+str1 = visual.TextStim(win, "Here is an example \"Offer\":\n", pos = (0, 0.6))
+str2 = visual.TextStim(win, "Offer: Work to", color = 'white', pos = (0, 0.4))
+type_txt = visual.TextStim(win, 'AVOID LOSING', color = 'forestgreen',pos = (0, 0.2))
+str3 = visual.TextStim(win, "10 points for", color = 'white', pos = (0, 0))
+target_txt = visual.TextStim(win, 'THE NEXT PARTICIPANT', color = 'purple', pos = (0, -0.2))
 str4 = visual.TextStim(win, 'Press the spacebar to continue.', color = 'white', pos = (0, -0.4))
 str1.draw()
 str2.draw()
@@ -293,9 +298,9 @@ event.waitKeys(keyList = ["space"]) # wait until subject responds
 choice_img.draw()
 txt = '''
 \n
-Once you see the "Offer", you have the option to either WORK to obtain
-the "Offer" or REST. This is what the choice screen looks like: \n
 \n
+Once you see the "Offer", you have the option to either WORK 
+to obtain the "Offer" or REST. This is what the choice screen looks like: \n
 \n
 \n
 Press the spacebar to continue.
@@ -305,19 +310,21 @@ wait_for_keypress(win, txt)
 choice_img.draw()
 txt = '''
 \n
-To choose WORK, you press the left arrow key. To choose REST, you 
-press the right arrow key. \n
+\n
+To choose WORK, you press the left arrow key. To choose REST, 
+you press the right arrow key. \n
+\n
 \n
 \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need target image
+squeeze_success.draw()
 txt = '''
 \n
-If you choose to WORK, you succeed by squeezing the grip sensor
-to a predetermined TARGET level for 1 second. \n
+If you choose to WORK, you succeed by squeezing the grip 
+sensor to a predetermined TARGET level for 1 second. \n
 \n
 \n
 \n
@@ -325,12 +332,11 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-####### need target image
+squeeze_fail.draw()
 txt = '''
 \n
 If you don't squeeze at or above the TARGET level for 1 second 
-you will fail the round. If you don't squeeze 
-at or above the TARGET you will fail the trial. \n
+you will fail the round. \n
 \n
 \n
 \n
@@ -385,8 +391,8 @@ wait_for_keypress(win, txt)
 ###### need work EARN fail pic
 txt = '''
 \n
-But if you choose to WORK to EARN 10 points
-and fail, you will not earn the 10 points. \n
+But if you choose to WORK to EARN 10 points and fail, 
+you will not earn the 10 points. \n
 \n
 \n
 \n
@@ -397,8 +403,8 @@ wait_for_keypress(win, txt)
 ###### need work AVOID LOSING success pic
 txt = '''
 \n
-If you choose to WORK to AVOID LOSING 10 points
-and succeed, you will successfully avoid losing the 10 points. \n
+If you choose to WORK to AVOID LOSING 10 points and succeed, 
+you will successfully avoid losing the 10 points. \n
 \n
 \n
 \n
@@ -409,8 +415,8 @@ wait_for_keypress(win, txt)
 ###### need work AVOID LOSING fail pic
 txt = '''
 \n
-But if you choose to WORK to AVOID LOSING 10 points
-and fail, you will lose the 10 points. \n
+But if you choose to WORK to AVOID LOSING 10 points and fail, 
+you will lose the 10 points. \n
 \n
 \n
 \n
@@ -420,8 +426,8 @@ wait_for_keypress(win, txt)
 
 txt = '''
 \n
-If you choose to REST, you earn fewer points than if you chose to
-WORK and succeeded. \n
+If you choose to REST, you earn fewer points than if you chose 
+to WORK and succeeded. \n
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -429,8 +435,8 @@ wait_for_keypress(win, txt)
 ###### need rest EARN pic
 txt = '''
 \n
-For example, if the offer is to EARN points and you choose to REST,
-you will earn 1 point. \n
+For example, if the offer is to EARN points and you choose to 
+REST, you will earn 1 point. \n
 \n
 \n
 \n
@@ -454,8 +460,8 @@ rest_points.draw()
 work_points.draw()
 txt = '''
 \n
-For any type of round, choosing to REST results in better outcomes 
-than choosing to WORK and failing but worse outcomes than 
+For any type of round, choosing to REST results in better 
+outcomes than choosing to WORK and failing but worse outcomes than 
 choosing to WORK and succeeding. \n
  \n
  \n
@@ -467,8 +473,8 @@ wait_for_keypress(win, txt)
 #### Need pic
 txt = '''
 \n
-So for an EARN round, choosing to WORK and succeeding gives you the 
-most points. Choosing to WORK and failing gives you the least points. \n
+So for an EARN round, choosing to WORK and succeeding gives 
+you the most points. Choosing to WORK and failing gives you the least points. \n
  \n
  \n
  \n
@@ -479,9 +485,8 @@ wait_for_keypress(win, txt)
 #### Need pic
 txt = '''
 \n
-For an AVOID LOSING round, choosing to WORK and succeeding results 
-in the least points lost. Choosing to WORK and failing results 
-in the most points lost. \n
+For an AVOID LOSING round, choosing to WORK and succeeding results in the least points lost. 
+Choosing to WORK and failing results in the most points lost. \n
  \n
  \n
  \n

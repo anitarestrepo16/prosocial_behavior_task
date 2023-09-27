@@ -256,6 +256,22 @@ def get_MVC(win, gdx_obj, sample_time):
 	present_text(win, 'STOP', 'red', 0.5)
 	return np.max(measurements)
 
+def determine_MVC(grip_strengths):
+	'''
+	Determine the maximum of three max grip strengths.
+
+	Arguments: 
+		grip_strengths (list): list of 3 (no more, no less) 
+			MVC measures.
+	
+	Returns: maximum of the three
+	'''
+	if len(grip_strengths) > 3:
+		print("STOP: SUBJECTS HAS >3 MAX GRIPS!!")
+	elif len(grip_strengths) < 3:
+		print('STOP: SUBJECT HAS <3 MAX GRIPS!!')
+	else:
+		return np.max(grip_strengths)
 
 def grip_segment(gdx_obj, sample_time, MVC, win, y_anchor):
 	'''
@@ -408,7 +424,7 @@ def present_feedback(win, trial, choice, success, display_time):
 	if target == 'YOU':
 		target_col = 'gold'
 	elif target == 'THE NEXT PARTICIPANT':
-		target_col = 'mediumslateblue'
+		target_col = 'purple'
 
 	# sanity check
 	if points_self != 0:
@@ -444,7 +460,7 @@ def fatigue_segment(win):
 					markerColor = 'DarkRed', stretch = 2)
 	# create instruction message
 	msg = visual.TextStim(win, 
-			text = "Rate your current fatigue from 0 to 100:",
+			text = "Rate your current hand fatigue from 0 (low) to 100 (high):",
 			color = "white", pos = (0,0))
 		
 	# draw and collect response
