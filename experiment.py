@@ -1,5 +1,5 @@
 import numpy as np
-from psychopy import visual, event
+from psychopy import visual, event, monitors
 from time import time
 import random
 
@@ -83,14 +83,13 @@ blocks = [block1, block2, block3, block4]
 
 # psychopy viz
 win = visual.Window(
-	size = (1600, 1000),
+	size = (1920, 1080),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
-	screen = 2,
-	monitor = 2,
+	screen = -1,
 	units = "norm",
-	fullscr = False,
-	pos = (0, 0),
+	fullscr = False, 
+	#pos = (0, 0),
 	allowGUI = False
 	)
 ANCHOR_Y = -0.5
@@ -100,22 +99,22 @@ OFFER_TIME = 1 # 3.5s
 FEEDBACK_TIME = 1 # 0.5s
 BREAK_TIME = 0.5 # 30s
 
-dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
-grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.1))
-choice_img = visual.ImageStim(win, 'image_stim/choice.png', pos = (0, -0.2))
-rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-300, -100), size = (640, 360), units = "pix")
-work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, -100), size = (640, 360), units = "pix")
-squeeze_success = visual.ImageStim(win, 'image_stim/squeeze_success.png', pos = (0, -0.1))
-squeeze_fail = visual.ImageStim(win, 'image_stim/squeeze_fail.png', pos = (0, -0.1))
-work_earn_success = visual.ImageStim(win, 'image_stim/ex_work_earn_success.png', pos = (0, -0.1))
-work_earn_failure = visual.ImageStim(win, 'image_stim/ex_work_earn_fail.png', pos = (0, -0.1))
-work_avoid_success = visual.ImageStim(win, 'image_stim/ex_work_avoid_success.png', pos = (0, -0.1))
-work_avoid_failure = visual.ImageStim(win, 'image_stim/ex_work_avoid_fail.png', pos = (0, -0.1))
-rest_earn = visual.ImageStim(win, 'image_stim/ex_rest_earn.png', pos = (0, -0.1))
-rest_avoid = visual.ImageStim(win, 'image_stim/ex_rest_avoid.png', pos = (0, -0.1))
-arrow_rest_earn = visual.ImageStim(win, 'image_stim/ex_rest_earn.png', pos = (-300, -100), size = (640, 360), units = "pix")
-arrow_work_earn = visual.ImageStim(win, 'image_stim/arrow_work_earn.png', pos = (300, -100), size = (640, 360), units = "pix")
-arrow_work_avoid = visual.ImageStim(win, 'image_stim/arrow_work_avoid.png', pos = (300, -100), size = (640, 360), units = "pix")
+dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5), size = (.51, .4))
+grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.2), size = (.7, .5))
+choice_img = visual.ImageStim(win, 'image_stim/choice.png', pos = (0, -0.2), size = (.8, .45))
+rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-.3, -.1), size = (.72, .55))
+work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (.3, -.1), size = (.72, .55))
+squeeze_success = visual.ImageStim(win, 'image_stim/squeeze_success.png', pos = (0, -0.1), size = (.72, .55))
+squeeze_fail = visual.ImageStim(win, 'image_stim/squeeze_fail.png', pos = (0, -0.1), size = (.72, .55))
+work_earn_success = visual.ImageStim(win, 'image_stim/ex_work_earn_success.png', pos = (0, -0.1), size = (.72, .55))
+work_earn_failure = visual.ImageStim(win, 'image_stim/ex_work_earn_fail.png', pos = (0, -0.1), size = (.72, .55))
+work_avoid_success = visual.ImageStim(win, 'image_stim/ex_work_avoid_success.png', pos = (0, -0.1), size = (.72, .55))
+work_avoid_failure = visual.ImageStim(win, 'image_stim/ex_work_avoid_fail.png', pos = (0, -0.1), size = (.72, .55))
+rest_earn = visual.ImageStim(win, 'image_stim/ex_rest_earn.png', pos = (0, -0.1), size = (.72, .55))
+rest_avoid = visual.ImageStim(win, 'image_stim/ex_rest_avoid.png', pos = (0, -0.1), size = (.72, .55))
+arrow_rest_earn = visual.ImageStim(win, 'image_stim/rest_earn_only.png', pos = (-.3, -.1), size = (.72, .55))
+arrow_work_earn = visual.ImageStim(win, 'image_stim/arrow_work_earn.png', pos = (.3, -.1), size = (.72, .55))
+arrow_work_avoid = visual.ImageStim(win, 'image_stim/arrow_work_avoid.png', pos = (.3, -.1), size = (.72, .55))
 
 
 ########################
@@ -138,9 +137,11 @@ txt = '''
 This is the way you should hold the grip strength sensor. 
 Make sure your fingers are wrapped tightly around it like
 in the picture. \n
-\n
-\n
-\n
+
+
+
+
+
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -164,13 +165,16 @@ present_text(win, 'STOP', 'red', 0.5)
 
 grip_right.draw()
 txt = '''
-\n
-\n
-Position your dominant hand on the hand dynamometer now.\n
-\n
-\n
-\n
-\n
+
+
+Position your dominant hand on the hand dynamometer now.
+
+
+
+
+
+
+
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
@@ -296,7 +300,7 @@ str2 = visual.TextStim(win, "Offer: Work to", color = 'white', pos = (0, 0.4))
 type_txt = visual.TextStim(win, 'AVOID LOSING', color = 'forestgreen',pos = (0, 0.2))
 str3 = visual.TextStim(win, "10 points for", color = 'white', pos = (0, 0))
 target_txt = visual.TextStim(win, 'THE NEXT PARTICIPANT', color = 'purple', pos = (0, -0.2))
-str4 = visual.TextStim(win, 'Press the spacebar to continue.', color = 'white', pos = (0, -0.4))
+str4 = visual.TextStim(win, '\n Press the spacebar to continue.', color = 'white', pos = (0, -0.4))
 str1.draw()
 str2.draw()
 type_txt.draw()
@@ -470,13 +474,14 @@ wait_for_keypress(win, txt)
 rest_points.draw()
 work_points.draw()
 txt = '''
-\n
 For any type of round, choosing to REST results in better 
 outcomes than choosing to WORK and failing but worse outcomes than 
-choosing to WORK and succeeding. \n
- \n
- \n
- \n
+choosing to WORK and succeeding.
+
+
+
+
+
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -484,12 +489,13 @@ wait_for_keypress(win, txt)
 arrow_rest_earn.draw()
 arrow_work_earn.draw()
 txt = '''
-\n
 So for an EARN round, choosing to WORK and succeeding gives 
-you the most points. Choosing to WORK and failing gives you the least points. \n
- \n
- \n
- \n
+you the most points. Choosing to WORK and failing gives you the least points.
+
+
+
+
+
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -497,12 +503,14 @@ wait_for_keypress(win, txt)
 rest_points.draw()
 arrow_work_avoid.draw()
 txt = '''
-\n
 For an AVOID LOSING round, choosing to WORK and succeeding results in the least points lost. 
-Choosing to WORK and failing results in the most points lost. \n
- \n
- \n
- \n
+Choosing to WORK and failing results in the most points lost.
+
+
+
+
+
+
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
