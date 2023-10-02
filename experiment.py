@@ -86,7 +86,8 @@ win = visual.Window(
 	size = (1600, 1000),
 	color = (0, 0, 0),
 	colorSpace = 'rgb255',
-	screen = -1,
+	screen = 2,
+	monitor = 2,
 	units = "norm",
 	fullscr = False,
 	pos = (0, 0),
@@ -97,7 +98,7 @@ MVC_TIME = 3 # 3s
 BASELINE_TIME = 3 # 5 min (300s)
 OFFER_TIME = 1 # 3.5s
 FEEDBACK_TIME = 1 # 0.5s
-BREAK_TIME = 0.5 # ???
+BREAK_TIME = 0.5 # 30s
 
 dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5))
 grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.1))
@@ -106,6 +107,16 @@ rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-300, -
 work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (300, -100), size = (640, 360), units = "pix")
 squeeze_success = visual.ImageStim(win, 'image_stim/squeeze_success.png', pos = (0, -0.1))
 squeeze_fail = visual.ImageStim(win, 'image_stim/squeeze_fail.png', pos = (0, -0.1))
+work_earn_success = visual.ImageStim(win, 'image_stim/ex_work_earn_success.png', pos = (0, -0.1))
+work_earn_failure = visual.ImageStim(win, 'image_stim/ex_work_earn_fail.png', pos = (0, -0.1))
+work_avoid_success = visual.ImageStim(win, 'image_stim/ex_work_avoid_success.png', pos = (0, -0.1))
+work_avoid_failure = visual.ImageStim(win, 'image_stim/ex_work_avoid_fail.png', pos = (0, -0.1))
+rest_earn = visual.ImageStim(win, 'image_stim/ex_rest_earn.png', pos = (0, -0.1))
+rest_avoid = visual.ImageStim(win, 'image_stim/ex_rest_avoid.png', pos = (0, -0.1))
+arrow_rest_earn = visual.ImageStim(win, 'image_stim/ex_rest_earn.png', pos = (-300, -100), size = (640, 360), units = "pix")
+arrow_work_earn = visual.ImageStim(win, 'image_stim/arrow_work_earn.png', pos = (300, -100), size = (640, 360), units = "pix")
+arrow_work_avoid = visual.ImageStim(win, 'image_stim/arrow_work_avoid.png', pos = (300, -100), size = (640, 360), units = "pix")
+
 
 ########################
 # Maximum Voluntary Contraction (MVC)
@@ -376,7 +387,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need work EARN success pic
+work_earn_success.draw()
 txt = '''
 \n
 For example, if you choose to WORK to EARN 10 points
@@ -388,7 +399,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need work EARN fail pic
+work_earn_failure.draw()
 txt = '''
 \n
 But if you choose to WORK to EARN 10 points and fail, 
@@ -400,7 +411,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need work AVOID LOSING success pic
+work_avoid_success.draw()
 txt = '''
 \n
 If you choose to WORK to AVOID LOSING 10 points and succeed, 
@@ -412,7 +423,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need work AVOID LOSING fail pic
+work_avoid_failure.draw()
 txt = '''
 \n
 But if you choose to WORK to AVOID LOSING 10 points and fail, 
@@ -432,7 +443,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need rest EARN pic
+rest_earn.draw()
 txt = '''
 \n
 For example, if the offer is to EARN points and you choose to 
@@ -444,7 +455,7 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-###### need rest AVOID LOSING pic
+rest_avoid.draw()
 txt = '''
 \n
 If the offer is to AVOID LOSING points and you choose to REST,
@@ -470,7 +481,8 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-#### Need pic
+arrow_rest_earn.draw()
+arrow_work_earn.draw()
 txt = '''
 \n
 So for an EARN round, choosing to WORK and succeeding gives 
@@ -482,7 +494,8 @@ Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
 
-#### Need pic
+rest_points.draw()
+arrow_work_avoid.draw()
 txt = '''
 \n
 For an AVOID LOSING round, choosing to WORK and succeeding results in the least points lost. 
