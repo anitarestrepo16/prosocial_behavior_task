@@ -134,10 +134,10 @@ wait_for_keypress(win, txt)
 
 grip_right.draw()
 txt = '''
-\n
 This is the way you should hold the grip strength sensor. 
 Make sure your fingers are wrapped tightly around it like
 in the picture. \n
+
 
 
 
@@ -166,6 +166,7 @@ present_text(win, 'STOP', 'red', 0.5)
 
 grip_right.draw()
 txt = '''
+
 
 Position your dominant hand on the hand dynamometer now.
 
@@ -638,6 +639,7 @@ t2 = time()
 print('Task Complete.')
 print('The task took %d minutes.'%((t2 - t1)/60))
 print('Participant earned %d points for themselves.'%(points_self))
+print('Participant earned %d dollars for themselves.'%(points_self/10))
 print('Participant earned %d points for the next participant.'%(points_other))
 
 ##########################
