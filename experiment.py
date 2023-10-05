@@ -95,12 +95,12 @@ win = visual.Window(
 ANCHOR_Y = -0.5
 MVC_TIME = 3 # 3s
 BASELINE_TIME = 3 # 5 min (300s)
-OFFER_TIME = 1 # 3.5s
-FEEDBACK_TIME = 1 # 0.5s
-BREAK_TIME = 0.5 # 30s
+OFFER_TIME = 3 # 3.5s
+FEEDBACK_TIME = 3 # 0.5s
+BREAK_TIME = 1 # 3s
 
 dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5), size = (.51, .4))
-grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, -0.2), size = (.7, .5))
+grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, 0), size = (.7, .5))
 choice_img = visual.ImageStim(win, 'image_stim/choice.png', pos = (0, -0.2), size = (.8, .45))
 rest_points = visual.ImageStim(win, 'image_stim/rest_points.PNG', pos = (-.3, -.1), size = (.72, .55))
 work_points = visual.ImageStim(win, 'image_stim/work_points.PNG', pos = (.3, -.1), size = (.72, .55))
@@ -126,7 +126,8 @@ arrow_work_avoid = visual.ImageStim(win, 'image_stim/arrow_work_avoid.png', pos 
 dynamo.draw()
 txt = '''
 First we're going to measure your grip strength 3 times using
- the grip strength sensor (pictured below). \n
+ the grip strength sensor (pictured below).
+
 Press the spacebar to continue.
 '''
 wait_for_keypress(win, txt)
@@ -165,7 +166,6 @@ present_text(win, 'STOP', 'red', 0.5)
 
 grip_right.draw()
 txt = '''
-
 
 Position your dominant hand on the hand dynamometer now.
 
@@ -552,7 +552,7 @@ Press the spacebar to continue.
 wait_for_keypress(win, txt)
 
 txt = '''
-Make sure to hold the grip strenmgth sensor only in your dominant 
+Make sure to hold the grip strength sensor only in your dominant 
 hand throughout the task. \n
 Press the spacebar to continue.
 '''
