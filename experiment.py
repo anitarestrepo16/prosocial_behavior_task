@@ -97,7 +97,7 @@ MVC_TIME = 3 # 3s
 BASELINE_TIME = 3 # 5 min (300s)
 OFFER_TIME = 3 # 3.5s
 FEEDBACK_TIME = 3 # 0.5s
-BREAK_TIME = 1 # 3s
+BREAK_TIME = 1 # 30s
 
 dynamo = visual.ImageStim(win, 'image_stim/Go_Direct_Dynomometer.jpg', pos = (0, -0.5), size = (.51, .4))
 grip_right = visual.ImageStim(win, 'image_stim/grip_right.jpg', pos = (0, 0), size = (.7, .5))
@@ -150,7 +150,7 @@ wait_for_keypress(win, txt)
 txt = '''
 \n 
 You will see a countdown on the screen from 3 to 1. Then the word SQUEEZE
-will appear on the screen. As soon as you see this, squeeze the hand dynamometer 
+will appear on the screen. As soon as you see this, squeeze the grip strength sensor 
 as tightly as you can until the word STOP appears on the screen (~3 seconds). 
 \n
 Press the spacebar to see an example.
@@ -167,8 +167,8 @@ present_text(win, 'STOP', 'red', 0.5)
 grip_right.draw()
 txt = '''
 
-
-Position your dominant hand on the hand dynamometer now.
+No we will measure your grip strength the first time.
+Position your dominant hand on the grip strength sensor now.
 
 
 
@@ -192,6 +192,22 @@ Press the spacebar when you're ready to go again.
 '''
 wait_for_keypress(win, txt)
 
+grip_right.draw()
+txt = '''
+
+No we will measure your grip strength the second time.
+Position your dominant hand on the grip strength sensor now.
+
+
+
+
+
+
+
+Press the spacebar when you're ready to begin.
+'''
+wait_for_keypress(win, txt)
+
 # Get MVC 2
 parport.send_trigger('MVC_start')
 max_grip2 = get_MVC(win, grip, MVC_TIME)
@@ -201,6 +217,22 @@ txt = '''
 \n
 Take a few seconds to rest.\n
 Press the spacebar when you're ready to go again.
+'''
+wait_for_keypress(win, txt)
+
+grip_right.draw()
+txt = '''
+
+No we will measure your grip strength one final time.
+Position your dominant hand on the grip strength sensor now.
+
+
+
+
+
+
+
+Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
@@ -339,7 +371,7 @@ wait_for_keypress(win, txt)
 squeeze_success.draw()
 txt = '''
 \n
-If you choose to WORK, you succeed by squeezing the grip 
+If you choose to WORK, you succeed by squeezing the grip strength
 sensor to a predetermined TARGET level for 1 second. \n
 \n
 \n
