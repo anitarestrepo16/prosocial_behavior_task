@@ -603,7 +603,7 @@ wait_for_keypress(win, txt)
 # baseline fatigue rating
 parport.send_trigger('fatigue_start')
 fatigue_rating = fatigue_segment(win)
-parport.send_trigger('fatigue_start')
+parport.send_trigger('fatigue_end')
 block_log.write(0, fatigue_rating)
 wait_for_keypress(win, 'Press the spacebar to start the task.')
 
@@ -657,7 +657,7 @@ for block in blocks:
 	# fatigue rating
 	parport.send_trigger('fatigue_start')
 	fatigue_rating = fatigue_segment(win)
-	parport.send_trigger('fatigue_start')
+	parport.send_trigger('fatigue_end')
 	block_log.write(block_num, fatigue_rating)
 
 	# short break
