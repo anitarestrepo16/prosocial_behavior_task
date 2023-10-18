@@ -19,10 +19,13 @@ class Triggerer():
         '''
         Map the trigger_types (list of strings with the labels for the flags)
         onto pin settings.
-        
+        Input:
+            trigger_types (lst): list of strings with the text labels for the flags
+        Output: list of integers representing the unique pin settings that need to be sent
+            to the Bionex for each trigger type.
         '''
         for index, trigger in enumerate(trigger_types):
-            self.trigger_labels[trigger] = index + 1
+            self.trigger_labels[trigger] = map_to_mindware(index + 1)
         return self.trigger_labels
             
 
@@ -31,3 +34,15 @@ class Triggerer():
         self.p.setData(value)
         time.sleep(duration)
         self.p.setData(0)
+
+def map_to_mindware(value):
+    '''
+    Helper function to translate intended pin numbers to the number mindware expects.
+    Input:
+        value (int): the flag number associated with a specific flag
+    Returns (int): the pin setting that needs to be sent for the Bionex to read as the intended
+    value.
+    '''
+    intended = bin(value)[2:]
+    actual = intended + '1'
+    return int(actual, 2)
