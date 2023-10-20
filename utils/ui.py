@@ -320,7 +320,7 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	# if choose to rest
 	elif ('right' in choice):
 		# rest segment
-		present_text(win, 'You may rest.')
+		present_text(win, 'You may rest.', display_time = 3)
 		return (-99, False)
 
 	# Anything else
