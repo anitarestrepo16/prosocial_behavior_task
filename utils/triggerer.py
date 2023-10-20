@@ -4,11 +4,17 @@ import time
 class Triggerer():
     '''
     Attributes:
-    - trigger_labels: dictionary of trigger types paired with the pin number (1-255)
+    - trigger_labels_to_send: dictionary of trigger types (strings) paired with the bit number (1-127) that
+     will be sent to Biolab to trigger that flag.
+    - trigger_labels_received: dictionary of trigger types (strings) paired with the bit number (1-255,
+      odd numbers only) that Biolab will register as belonging to that flag (for stupid reasons of Mindware
+      designing the Bionex to communicate with EPrime).
     Methods:
-    - set_trigger_labels: takes a list of strings and pairs them with unique pin numbers
+    - set_trigger_labels: Takes a list of strings and pairs them with unique trigger labels 
+    (both to send and received). Sets attributes trigger_labels_to_send and trigger_labels_received.
     - send_trigger: takes a trigger type and optional duration parameter and sends a trigger
-    (move pin to adequate number and brings it back down after a certain duration (default = .002))
+    (move pins to adequate bit number and brings them back down after a certain duration (default = .002s))
+    - create_txt_file: Create the txt file that needs to be read into Biolab in the events tab.
     '''
 
     def __init__(self, address):
@@ -18,12 +24,11 @@ class Triggerer():
     
     def set_trigger_labels(self, trigger_types):
         '''
-        Map the trigger_types (list of strings with the labels for the flags)
-        onto pin settings.
+        Takes a list of strings and pairs them with unique trigger labels (both to send and received). Sets
+            attributes trigger_labels_to_send and trigger_labels_received.
         Input:
             trigger_types (lst): list of strings with the text labels for the flags
-        Output: list of integers representing the unique pin settings that need to be sent
-            to the Bionex for each trigger type.
+        Output: None
         '''
         # ensure trigger_types has 127 or fewer items b/c max unique combinations given mindware
         assert len(trigger_types) <= 127, 'Max trigger types is 127!'
@@ -33,6 +38,14 @@ class Triggerer():
             
 
     def send_trigger(self, trigger_type, duration = .002):
+        '''
+        Takes a trigger type and optional duration parameter and sends a trigger (move pins to 
+            adequate bit number and brings them back down after a certain duration (default = .002s))
+        Inputs:
+            trigger_type (str): trigger label to send
+            duration (float): optional
+        Output: None
+        '''
         value = self.trigger_labels_to_send[trigger_type]
         self.p.setData(value)
         time.sleep(duration)
