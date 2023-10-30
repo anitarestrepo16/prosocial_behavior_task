@@ -287,14 +287,18 @@ def grip_segment(gdx_obj, sample_time, MVC, win, y_anchor):
 		win: the psychopy window to draw to
 		y_anchor (float): the vertical height to anchor the bottom of the rect
 	
-	Returns: tuple
+	Returns: tuple with four elements
 		avg_grip (float): average of all sampled values for sample_time
+		max_grip (float): maximum value of all sampled values for sample_time
+		min_grip: (float): minimum value of all sampled values for sample_time
 		trial_outcome (Boolean): True if successful, False if failed.
 	'''
 	measurements = get_squeeze_and_viz(gdx_obj, sample_time, win, y_anchor, MVC)
 	avg_grip = np.mean(measurements)
+	max_grip = np.max(measurements)
+	min_grip = np.min(measurements)
 	success = determine_success(measurements, MVC)
-	return (avg_grip, success)
+	return (avg_grip, max_grip, min_grip, success)
 
 def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	'''

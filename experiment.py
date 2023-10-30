@@ -61,7 +61,7 @@ practice_trials = [
 ]
 
 # make trials list
-trials_per_type = 2
+trials_per_type = 25 # 25
 trials = [
 	# self reward
     trials_per_type*['self_reward'] +
@@ -182,7 +182,7 @@ wait_for_keypress(win, txt)
 
 # Get MVC 1
 parport.send_trigger('MVC_start')
-max_grip1 = get_MVC(win, grip, MVC_TIME)
+mvc1 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
 
 txt = '''
@@ -210,7 +210,7 @@ wait_for_keypress(win, txt)
 
 # Get MVC 2
 parport.send_trigger('MVC_start')
-max_grip2 = get_MVC(win, grip, MVC_TIME)
+mvc2 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
 
 txt = '''
@@ -238,11 +238,11 @@ wait_for_keypress(win, txt)
 
 # Get MVC 3
 parport.send_trigger('MVC_start')
-max_grip3 = get_MVC(win, grip, MVC_TIME)
+mvc3 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
 
-max_grip = determine_MVC([max_grip1, max_grip2, max_grip3])
-subj_log.write(subj_num, max_grip)
+mvc = determine_MVC([mvc1, mvc2, mvc3])
+subj_log.write(subj_num, mvc)
 
 ########################
 # Baseline Physio
@@ -568,7 +568,7 @@ for trial in practice_trials:
 	# fixation
 	fixation_cross(win)
 	# work/rest
-	avg_grip, success = work_rest_segment(win, choice, grip, max_grip, ANCHOR_Y)
+	avg_grip, max_grip, min_grip, success = work_rest_segment(win, choice, grip, mvc, ANCHOR_Y)
 	# fixation
 	fixation_cross(win)
 	# feeback
@@ -626,8 +626,7 @@ for block in blocks:
 		fixation_cross(win)
 		# work/rest
 		parport.send_trigger('work_rest')
-		avg_grip, success = work_rest_segment(win, choice, grip, max_grip, ANCHOR_Y)
-		print(success)
+		avg_grip, max_grip, min_grip, success = work_rest_segment(win, choice, grip, mvc, ANCHOR_Y)
 		# fixation
 		fixation_cross(win)
 		# feeback
