@@ -242,7 +242,7 @@ mvc3 = get_MVC(win, grip, MVC_TIME)
 parport.send_trigger('MVC_end')
 
 mvc = determine_MVC([mvc1, mvc2, mvc3])
-subj_log.write(subj_num, mvc)
+subj_log.write(subj_num, mvc, mvc1, mvc2, mvc3)
 
 ########################
 # Baseline Physio
@@ -620,7 +620,7 @@ for block in blocks:
 		# fixation
 		fixation_cross(win)
 		# choice
-		choice = present_choice(win)
+		choice, choice_RT = present_choice(win)
 		parport.send_trigger('make_choice')
 		# fixation
 		fixation_cross(win)
@@ -645,6 +645,7 @@ for block in blocks:
 			trial_num,
 			trial,
 			choice,
+			choice_RT,
 			avg_grip, 
 			success,
 			points[0],

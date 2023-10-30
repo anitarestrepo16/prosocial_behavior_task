@@ -71,18 +71,18 @@ class CSVWriter_trial:
         fpath = os.path.join(dir, 'subject%d_trial_dat.csv'%subj_num)
         self._f = open(fpath, 'w')
         self._f.write('block_num,trial_num,trial_type,choice,\
-                      avg_grip,success,outcome_self,outcome_other')
+                      avg_grip,max_grip,min_grip,success,outcome_self,outcome_other')
 
     def write(self, block_num, trial_num, trial_type, \
-               choice, avg_grip, success, outcome_self, \
+               choice, choice_RT, avg_grip, max_grip, min_grip, success, outcome_self, \
                 outcome_other):
         '''
         writes a trial's parameters to log
         '''
 
-        line = '\n%i,%i,%s,%s,%f,%i,%i,%i'%(
+        line = '\n%i,%i,%s,%s,%f,%f,%f,%f,%i,%i,%i'%(
             block_num, trial_num, trial_type, \
-                choice, avg_grip, success, outcome_self,\
+                choice, choice_RT, avg_grip, max_grip, min_grip, success, outcome_self,\
                       outcome_other)
         self._f.write(line)
 
@@ -130,15 +130,15 @@ class CSVWriter_subj:
             os.makedirs(dir)
         fpath = os.path.join(dir, 'subject%d_subj_dat.csv'%subj_num)
         self._f = open(fpath, 'w')
-        self._f.write('subj_id,MVC')
+        self._f.write('subj_id,MVC,MVC_1,MVC_2,MVC_3')
 
-    def write(self, subj_num, MVC):
+    def write(self, subj_num, MVC, MVC_1, MVC_2, MVC_3):
         '''
-        writes a trial's parameters to log
+        writes to log
         '''
 
-        line = '\n%i,%f'%(
-            subj_num, MVC)
+        line = '\n%i,%f,%f,%f,%f'%(
+            subj_num, MVC, MVC_1, MVC_2, MVC_3)
         self._f.write(line)
 
     def close(self):
