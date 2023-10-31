@@ -167,7 +167,7 @@ present_text(win, 'STOP', 'red', 0.5)
 grip_right.draw()
 txt = '''
 
-No we will measure your grip strength the first time.
+Now we will measure your grip strength the first time.
 Position your dominant hand on the grip strength sensor now.
 
 
@@ -195,7 +195,7 @@ wait_for_keypress(win, txt)
 grip_right.draw()
 txt = '''
 
-No we will measure your grip strength the second time.
+Now we will measure your grip strength the second time.
 Position your dominant hand on the grip strength sensor now.
 
 
@@ -223,7 +223,7 @@ wait_for_keypress(win, txt)
 grip_right.draw()
 txt = '''
 
-No we will measure your grip strength one final time.
+Now we will measure your grip strength one final time.
 Position your dominant hand on the grip strength sensor now.
 
 
@@ -253,8 +253,8 @@ txt = '''
 \n
 Now you will sit quietly for 5 minutes. 
 The word RELAX will appear on the screen. Just sit comfortably,
- relax and breathe normally. The screen will let you know when it is time
- for the next task. \n
+ relax and breathe normally. Try to stay still and not speak. 
+ The screen will let you know when it is time for the next task. \n
 Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
@@ -564,7 +564,7 @@ for trial in practice_trials:
 	# fixation
 	fixation_cross(win)
 	# choice
-	choice = present_choice(win)
+	choice, choice_RT = present_choice(win)
 	# fixation
 	fixation_cross(win)
 	# work/rest
@@ -647,6 +647,8 @@ for block in blocks:
 			choice,
 			choice_RT,
 			avg_grip, 
+			max_grip,
+			min_grip,
 			success,
 			points[0],
 			points[1]

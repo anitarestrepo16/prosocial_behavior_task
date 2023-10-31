@@ -88,14 +88,16 @@ def present_choice(win):
 	  (left or right arrow keys)
 	  and records keypress. 
     '''
+	RT_clock = core.Clock()
 	left_choice_message = visual.TextStim(win, color = "SteelBlue", pos = (-0.3, 0),
                                   text = 'WORK \n <--')
 	left_choice_message.draw()
 	right_choice_message = visual.TextStim(win, color = "Chocolate", pos = (+0.3, 0),
                                   text = 'REST \n -->')
 	right_choice_message.draw()
+	RT_clock.reset()
 	win.flip()
-	return event.waitKeys(keyList = ['left', 'right'])
+	return event.waitKeys(keyList = ['left', 'right'], timeStamped = RT_clock)
 
 def translate_choice(choice):
 	'''
@@ -305,9 +307,11 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	If chose to work, presents grip strength segment,
 	otherwise presents "Rest".
 
-	Returns tuple:
-		avg_grip (float): mean grip strength for that trial
-		success (Boolean): whether work trial succeeded
+	Returns: tuple with four elements
+		avg_grip (float): average of all sampled values for sample_time (-99 for rest)
+		max_grip (float): maximum value of all sampled values for sample_time (-99 for rest)
+		min_grip: (float): minimum value of all sampled values for sample_time (-99 for rest)
+		trial_outcome (Boolean): True if successful, False if failed or rest.
 	'''
 	# if choose to work
 	if ('left' in choice):
@@ -318,14 +322,14 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 
 		# Grip
 		present_text(win, 'SQUEEZE', 'white', 0.1)
-		avg_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
-		return (avg_grip, success)
+		avg_grip, max_grip, min_grip, success = grip_segment(gdx_obj, 3, MVC, win, y_anchor) # sample 3s
+		return (avg_grip, max_grip, min_grip, success)
 
 	# if choose to rest
 	elif ('right' in choice):
 		# rest segment
 		present_text(win, 'You may rest.', display_time = 3)
-		return (-99, False)
+		return (-99, -99, -99, False)
 
 	# Anything else
 	else:
