@@ -97,7 +97,7 @@ def present_choice(win):
 	right_choice_message.draw()
 	RT_clock.reset()
 	win.flip()
-	return event.waitKeys(keyList = ['left', 'right'], timeStamped = RT_clock)
+	return event.waitKeys(keyList = ['left', 'right'], timeStamped = RT_clock)[0]
 
 def translate_choice(choice):
 	'''
