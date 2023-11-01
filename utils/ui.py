@@ -133,15 +133,12 @@ def determine_success(grip_list, MVC):
 	else:
 		# iterate across measurements
 		n_success = 0
-		print('starting: ', n_success)
 		for val in grip_list:
 			# check the value
 			if val > 0.7*MVC:
 				n_success += 1
-				print(n_success)
 			else:
 				n_success = 0
-				print(n_success)
 			# check number of successes
 			if n_success >= 10:
 				return True
@@ -198,7 +195,6 @@ def get_squeeze(gdx_obj, sample_time):
 	gdx_obj.start(100)
 	measurements = []
 	t0 = time()
-	print('t0: ',t0)
 	t = time()
 	while t <= t0 + sample_time:
 		measurement = gdx_obj.read()
@@ -225,7 +221,6 @@ def get_squeeze_and_viz(gdx_obj, sample_time, win, y_anchor, MVC):
 	gdx_obj.start(100)
 	measurements = []
 	t0 = time()
-	print('t0: ',t0)
 	t = time()
 	while t <= t0 + sample_time:
 		measurement = gdx_obj.read()

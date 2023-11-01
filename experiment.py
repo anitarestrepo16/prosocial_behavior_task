@@ -120,7 +120,7 @@ arrow_work_avoid = visual.ImageStim(win, 'image_stim/arrow_work_avoid.png', pos 
 ########################
 # Maximum Voluntary Contraction (MVC)
 ########################
-
+print("Starting Instructions!")
 # Instructions 
 
 dynamo.draw()
@@ -259,10 +259,12 @@ Press the spacebar when you're ready to begin.
 '''
 wait_for_keypress(win, txt)
 
+print("Starting Physio Baseline!")
 # Get Baseline Physio
 parport.send_trigger('baseline_start')
 present_text(win, 'Relax', BASELINE_TIME)
 parport.send_trigger('baseline_end')
+print("Finished Physio Baseline!")
 
 ########################
 # Prosocial Behavior Task
@@ -557,6 +559,7 @@ Press the spacebar when you're ready for the practice round.
 wait_for_keypress(win, txt)
 
 # Practice
+print("Starting Practice Trials!")
 for trial in practice_trials:
 	# offer
 	type, target = decide_offer(trial)
@@ -576,6 +579,7 @@ for trial in practice_trials:
 	# fixation (ITI)
 	fixation_cross(win)
 
+print("Finished Practice Trials!")
 txt = '''
 Now you're ready for the real game. Every couple rounds you'll be asked 
 to rate how fatigued your hand is and will 
@@ -599,6 +603,7 @@ Press the spacebar when you're ready to begin.
 wait_for_keypress(win, txt)
 
 # Run Prosocial Behavior Task
+print("Starting Main Task!")
 
 # baseline fatigue rating
 parport.send_trigger('fatigue_start')
@@ -612,6 +617,7 @@ for block in blocks:
 
 	for trial in block:
 
+		print("Starting trial " + str(trial_num))
 		# decide what to offer this trial
 		type, target = decide_offer(trial)
 		# show offer
@@ -620,8 +626,8 @@ for block in blocks:
 		# fixation
 		fixation_cross(win)
 		# choice
-		choice, choice_RT = present_choice(win)
 		parport.send_trigger('make_choice')
+		choice, choice_RT = present_choice(win)
 		# fixation
 		fixation_cross(win)
 		# work/rest
@@ -640,6 +646,8 @@ for block in blocks:
 
 		# save data
 		choice = translate_choice(choice)
+		print("Participant Success: " + str(success))
+		print("Participant chose " + choice + " after " + str(choice_RT) + " seconds")
 		trial_log.write(
 			block_num,
 			trial_num,
