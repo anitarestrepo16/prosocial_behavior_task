@@ -262,7 +262,7 @@ wait_for_keypress(win, txt)
 print("Starting Physio Baseline!")
 # Get Baseline Physio
 parport.send_trigger('baseline_start')
-present_text(win, 'Relax', BASELINE_TIME)
+present_text(win, 'Relax', 'white', display_time = BASELINE_TIME)
 parport.send_trigger('baseline_end')
 print("Finished Physio Baseline!")
 
@@ -665,15 +665,20 @@ for block in blocks:
 		# trial end
 
 	# fatigue rating
+	print("Fatigue starting!")
 	parport.send_trigger('fatigue_start')
 	fatigue_rating = fatigue_segment(win)
 	parport.send_trigger('fatigue_end')
+	print("Fatigue ended.")
 	block_log.write(block_num, fatigue_rating)
 
 	# short break
-	present_text(win, 'You can take a short break now.', 'white', BREAK_TIME)
-	wait_for_keypress(win, 'Press the spacebar to continue the task.')
-	block_num += 1
+	if block_num < 4:
+		print("Starting break!")
+		present_text(win, 'You can take a short break now.', 'white', BREAK_TIME)
+		print("Break ended!")
+		wait_for_keypress(win, 'Press the spacebar to continue the task.')
+		block_num += 1
 	# block end
 
 grip.close()
@@ -681,7 +686,7 @@ t2 = time()
 print('Task Complete.')
 print('The task took %d minutes.'%((t2 - t1)/60))
 print('Participant earned %d points for themselves.'%(points_self))
-print('Participant earned %d dollars for themselves.'%(points_self/10))
+print('Participant earned %d dollars for themselves.'%(points_self/20))
 print('Participant earned %d points for the next participant.'%(points_other))
 
 ##########################
