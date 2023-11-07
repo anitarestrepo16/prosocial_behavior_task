@@ -362,7 +362,7 @@ txt = '''
 \n
 \n
 To choose WORK, you press the left arrow key. To choose REST, 
-you press the right arrow key. \n
+you press the right arrow key. You will have 3 seconds to make your choice!\n
 \n
 \n
 \n
@@ -686,7 +686,7 @@ t2 = time()
 print('Task Complete.')
 print('The task took %d minutes.'%((t2 - t1)/60))
 print('Participant earned %d points for themselves.'%(points_self))
-print('Participant earned %d dollars for themselves.'%(points_self/20))
+print('Participant earned %d dollars for themselves.'%(points_self/30))
 print('Participant earned %d points for the next participant.'%(points_other))
 
 ##########################

@@ -97,7 +97,14 @@ def present_choice(win):
 	right_choice_message.draw()
 	RT_clock.reset()
 	win.flip()
-	return event.waitKeys(keyList = ['left', 'right'], timeStamped = RT_clock)[0]
+	response = event.waitKeys(keyList = ['left', 'right'], timeStamped = RT_clock, maxWait = 3.5)
+	# if timed out
+	if response is None:
+		choice = 'timed_out'
+		choice_RT = 3.5
+	else:
+		choice, choice_RT = response[0]
+	return (choice, choice_RT)
 
 def translate_choice(choice):
 	'''
@@ -109,7 +116,7 @@ def translate_choice(choice):
 	elif ('right' in choice):
 		return 'rest'
 	else:
-		return ''
+		return 'timed_out'
 
 def determine_success(grip_list, MVC):
 	'''
@@ -329,7 +336,8 @@ def work_rest_segment(win, choice, gdx_obj, MVC, y_anchor):
 	# Anything else
 	else:
 		# catch all
-		present_text(win, 'Please make a choice.')
+		present_text(win, 'Please respond quicker!', display_time = 3)
+		return (-99, -99, -99, False)
 
 def present_feedback(win, trial, choice, success, display_time):
 	'''
@@ -424,10 +432,19 @@ def present_feedback(win, trial, choice, success, display_time):
 			points_self = 0
 			points_other = 0
 	
+	# if timed out
+	else:
+		outcome = 'Too slow! No points.'
+		target = ''
+		points_self = 0
+		points_other = 0
+		
 	if target == 'YOU':
 		target_col = 'gold'
 	elif target == 'THE NEXT PARTICIPANT':
 		target_col = 'purple'
+	else:
+		target_col = 'white'
 
 	# sanity check
 	if points_self != 0:
