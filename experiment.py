@@ -37,7 +37,9 @@ parport.set_trigger_labels(['MVC_start', 'MVC_end',
 
 # hand dynamometer
 grip = gdx.gdx()
-grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221')
+grip.open(connection= 'usb')
+#grip.open(connection = 'usb', device_to_open = 'GDX-HD 15400221') # GDX 1
+#grip.open(connection = 'usb', device_to_open = 'GDX-HD 15500049') # GDX 2
 grip.select_sensors([1])
 
 # data handling
